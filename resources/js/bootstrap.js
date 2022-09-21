@@ -1,3 +1,5 @@
+window.$ = window.jQuery = require('jquery');
+const {popper} = require("@popperjs/core");
 window._ = require('lodash');
 
 try {
