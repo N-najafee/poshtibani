@@ -15,7 +15,7 @@
                     <th>ردیف</th>
                     <th>عنوان</th>
                     <th>موضوع</th>
-                    <th>توضیحات</th>
+                    <th>پیوست</th>
                     <th>وضعیت</th>
                     <th>عملیات</th>
                 </tr>
@@ -23,28 +23,32 @@
                     <tr>
                         <td>{{$tickets->firstitem()+$key}}</td>
                         <td>{{$ticket->title}}</td>
-                        <td>{{$ticket->subject}}</td>
-                        <td>{{$ticket->description}}</td>
+                        <td>{{$ticket->parent->subject}}</td>
+                        <td><a href="{{url(env('UPLOAD_FILE').$ticket->attachment)}}"
+                               target="_blank">{{$ticket->attachment}}</a></td>
                         <td class="">{{$ticket->status}}</td>
-                           <td class="d-flex justify-content-center ">
-                               @if($ticket->status === "باز")
-                               <a href="{{route('poshtiban.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">   پاسخ</a>
-                               @elseif($ticket->status === "پاسخ داده شده")
-                                   <a href="{{route('poshtiban.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">   پاسخ</a>
-                               @else
-                                   <a href="" class="btn btn-outline-primary ms-1"> نمایش پاسخ</a>
-                               @endif
-                               <div class="dropdown">
-                                   <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                      تغییر وضعیت
-                                   </button>
-                                   <ul class="dropdown-menu">
-                                       <li><a class="dropdown-item" href="#">باز</a></li>
-                                       <li><a class="dropdown-item" href="#">بسته</a></li>
-                                       <li><a class="dropdown-item" href="#">پاسخ داده شده</a></li>
-                                   </ul>
-                               </div>
-                           </td>
+                        <td class="d-flex justify-content-center btn-group btn-group-justified">
+                            @if($ticket->getraworiginal('status') === \App\Models\Ticket::OPEN)
+                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}"
+                                   class="btn btn-outline-primary ms-5 me-5"> پاسخ</a>
+                            @elseif($ticket->getraworiginal('status') === \App\Models\Ticket::COMPLETED)
+                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}"
+                                   class="btn btn-outline-primary ms-5 me-5"> پاسخ</a>
+                            @else
+                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5"> نمایش پاسخ</a>
+                            @endif
+                            <div class="dropdown ">
+                                <button class="btn btn-outline-primary dropdown-toggle ms-5" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    تغییر وضعیت تیکت ها
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">باز</a></li>
+                                    <li><a class="dropdown-item" href="#">بسته</a></li>
+                                    <li><a class="dropdown-item" href="#">پاسخ داده شده</a></li>
+                                </ul>
+                            </div>
+                        </td>
                     </tr>
                 @endforeach
             </table>

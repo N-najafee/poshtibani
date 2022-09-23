@@ -17,10 +17,11 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->foreignId("user_id");
             $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->unsignedInteger("parent_id");
             $table->string("title");
             $table->string("subject");
             $table->text('description');
-            $table->enum('status',["باز", 'بسته',  'پاسخ داده شده'])->default('باز');
+            $table->tinyInteger('status')->default(1);
             $table->string('attachment')->nullable();
             $table->timestamps();
             $table->softDeletes();

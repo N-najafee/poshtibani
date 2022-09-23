@@ -18,11 +18,15 @@
             <div class="row ">
                 <div class="form-group col-3">
                     <label>عنوان</label>
-                    <input class="form-control @error('title')  is-invalid @enderror" type="text" name="title">
+                    <input class="form-control @error('title')  is-invalid @enderror" type="text" name="title" value="{{old('title')}}">
                 </div>
                 <div class="form-group col-3">
                     <label>موضوع</label>
-                    <input class="form-control @error('subject')  is-invalid @enderror" type="text" name="subject">
+                    <select class="form-select" type="text" name="subject_parent">
+                        @foreach($subjects as $subject)
+                        <option value="{{$subject->id}}">{{$subject->subject}}</option>
+                            @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-3">
                     <label>انتخاب فایل</label>
@@ -31,7 +35,7 @@
             </div >
             <div class="col-12 mt-3">
                 <label>توضیحات</label>
-                <textarea class="form-control" name="description" rows="5"></textarea>
+                <textarea class="form-control @error('description')  is-invalid @enderror" name="description" rows="5">{{old('description')}}</textarea>
             </div>
           @component('files.bottom',['class'=>'btn  btn-outline-primary m-3', 'name'=>'ایجاد'])
                @endcomponent

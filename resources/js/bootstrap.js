@@ -1,7 +1,5 @@
-window.$ = window.jQuery = require('jquery');
-const {popper} = require("@popperjs/core");
 window._ = require('lodash');
-
+require("sweetalert");
 try {
     require('bootstrap');
 } catch (e) {}

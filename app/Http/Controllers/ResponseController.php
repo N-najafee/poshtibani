@@ -13,7 +13,7 @@ class ResponseController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**

@@ -6,9 +6,11 @@ use App\Models\Response;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Http\RedirectResponse as RedirectResponseAlias;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use UxWeb\SweetAlert\SweetAlert;
 
 class TicketController extends Controller
 {
@@ -20,15 +22,20 @@ class TicketController extends Controller
 
     public function __construct()
     {
-
+        if(!auth()->user()){
+            $this->middleware('auth');
+        }
     }
 
 
     public function index()
     {
+//        $ti=Ticket::find(3);
+//        foreach ($ti->responses_methode->slice(2) as $t){
+//            echo $t->description . "<br>";
+//        }
         $user = auth()->user();
-        $tickets = Ticket::where('user_id', $user->id)->orderby('title')->latest()->paginate(2);
-        $t = Ticket::find(1);
+        $tickets = Ticket::where('parent_id','!=',0)->where('user_id',$user->id)->orderby('title')->latest()->paginate(2);
         return view('ticket.show', compact('tickets'));
     }
 
@@ -39,8 +46,9 @@ class TicketController extends Controller
      */
     public function create()
     {
+        $subjects=Ticket::where('parent_id',0)->get();
         $user = auth()->user();
-        return view('ticket.create', compact('user'));
+        return view('ticket.create', compact('user','subjects'));
     }
 
 
@@ -50,10 +58,11 @@ class TicketController extends Controller
      */
     public function store(Request $request): RedirectResponseAlias
     {
+
         // question about user_id //
         $request->validate([
             'title' => 'required',
-            'subject' => 'required',
+            'subject_parent' => 'required',
             'description' => 'required',
             'attachment.*' => 'nullable|mimes:jpg,jpeg,png,svg,pdf,txt',
         ]);
@@ -62,17 +71,17 @@ class TicketController extends Controller
             $request->attachment->move(public_path(env('UPLOAD_FILE')), $file_name);
         }
 
+
         Ticket::create([
             'user_id' => $request->query('user'),
+            'parent_id'=>$request->subject_parent,
+            'subject'=>'-',
             'title' => $request->title,
-            'subject' => $request->subject,
             'description' => $request->description,
             'attachment' => $file_name ?? null,
         ]);
-        alert()->success('تیکت با موفقیت ایجاد گردید');
-        return redirect()->back();
-
-
+      alert()->success('تیکت با موفقیت ایجاد گردید');
+        return redirect()->route('ticket.index');
     }
 
     /**

@@ -156,8 +156,7 @@ return [
         'newpassword_confirmation' => 'تکرار رمز عبور جدید',
         'longitude'             => 'طول جغرافیایی',
         'latitude'              => 'عرض جغرافیایی',
-        'type'              => 'نوع',
-        'Login'              => 'نوع',
+        'subject_parent'              => 'موضوع',
     ],
 
 ];

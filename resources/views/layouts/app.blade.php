@@ -18,6 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    @yield('style')
 </head>
 <body>
     <div id="app" class="container">
@@ -79,7 +80,8 @@
             @yield('content')
         </main>
     </div>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}" ></script>
+    <script src="{{ asset('fontasom/all.min.js') }}" ></script>
     @include('sweet::alert')
     @yield('script')
 </body>

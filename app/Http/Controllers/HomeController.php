@@ -23,12 +23,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    function index()
     {
-        if(auth()->user()->role === "کاربر عادی") {
-            return redirect()->route('ticket.index');
-        }elseif(auth()->user()->role === "پشتیبان"){
+        if(auth()->user()->getraworiginal('role') === self::USER){
+       return redirect()->route('ticket.index');
+    }elseif (auth()->user()->getraworiginal('role') === self::POSHTIBAN){
             return redirect()->route('poshtiban.index');
+        }else{
+            return redirect()->route('admin.index');
+
         }
     }
 
