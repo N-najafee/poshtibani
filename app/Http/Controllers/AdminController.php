@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Response;
 use App\Models\Ticket;
 use App\Models\User;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
@@ -15,29 +19,27 @@ class AdminController extends Controller
         if (!auth()->user()) {
             $this->middleware('auth');
         }
+        $this->middleware('Checkadmin');
+
     }
 
 
     function index()
     {
-        if (auth()->user()->getraworiginal('role') === self::POSHTIBAN) {
-            return redirect()->route('poshtiban.index');
-        } elseif (auth()->user()->getraworiginal('role') === self::USER) {
-            return redirect()->route('admin.index');
-        }
-        $users = User::all();
-        $subjects = Ticket::where('parent_id', 0)->latest()->paginate(10);
-        $tickets = Ticket::where('parent_id', '!=', 0)->latest()->paginate(4);
+
+        $users = User::orderby('created_at', 'DESC')->get();
+        $subjects = Ticket::withTrashed()->where('parent_id', 0)->get();
+        $tickets = Ticket::withTrashed()->where('parent_id', '!=', 0)->get();
         return view('admin.index', compact('tickets', 'subjects', 'users'));
     }
 
-    function create_subject(Ticket $subject)
+    function create_subject()
     {
         $user = auth()->user();
-        return view('admin.subject', compact('user', 'subject'));
+        return view('admin.create_subject', compact('user'));
     }
 
-    function store(Request $request, User $user)
+    function store_subject(Request $request, User $user)
     {
         $request->validate([
             'name_subject' => 'required|unique:tickets,subject',
@@ -56,8 +58,15 @@ class AdminController extends Controller
 
     }
 
-    function update_subject(Request $request, Ticket $ticket, User $user)
+    function edit_subject(Ticket $ticket)
     {
+        $user = auth()->user();
+        return view('admin.edit_subject', compact('user','ticket'));
+    }
+
+    function update_subject(Request $request, Ticket $ticket, $user)
+    {
+//        dd($request->all());
         $request->validate([
             'subject' => 'required',
         ]);
@@ -65,7 +74,8 @@ class AdminController extends Controller
         $ticket->update([
             'subject' => $request->subject,
             'title' => $request->subject,
-            'description' => $request->description,
+            'description' => $request->description == "" ? $request->subject : $request->description,
+            'user_id'=>$user,
         ]);
         alert()->success('موضوع با موفقیت ویرایش گردید');
         return redirect()->route('admin.index');
@@ -75,46 +85,78 @@ class AdminController extends Controller
 
     function destroy_subject(Ticket $subject)
     {
-        $subject->delete();
+        try {
+            DB::beginTransaction();
+            $subject->delete();
+            foreach ($subject->child as $child) {
+                $child->update([
+                    'deleted_at' => Carbon::now(),
+                ]);
+                foreach ($child->response_methode as $response) {
+                    $response->update([
+                        'deleted_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            alert()->warning('موضوع و تیکت ها حذف نگردید');
+            return redirect()->route('admin.index');
+        }
+
         alert()->success('موضوع حذف گردید');
         return redirect()->route('admin.index');
     }
 
-    function edit(User $user)
+    function show(Ticket $ticket)
     {
 
-        return view('admin.edit_user', compact('user'));
+        return view('admin.show_ticket', compact('ticket'));
     }
 
-    function update(Request $request, User $uuser)
+    function edit_ticket(Ticket $ticket)
     {
-//        dd($request->is_active);
-        if(Gate::allows('update', $uuser)) {
-            $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,email,' . $uuser->id,
-            ]);
-            $uuser->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'is_active' => ($request->is_active),
-                'role' => $request->role,
-            ]);
 
-            alert()->success(' کاربر ویرایش گردید.');
-            return redirect()->route('admin.index');
-        }else{
+        return view('admin.edit_ticket', compact('ticket'));
+    }
 
-            alert()->error('ویرایش توسط مدیر انجام می گردد.');
+    function update_ticket(Request $request, Ticket $ticket)
+    {
+        $request->validate([
+           'response'=>'required',
+        ]);
+
+       Response::find(key($request->response))->update([
+           'description'=>array_values($request->response),
+           'user_id'=>auth()->user()->id,
+           'updated_at'=>Carbon::now(),
+       ]);
+        alert()->success('پاسخ تیکت ویرایش گردید');
+        return redirect()->route('admin.index');
+
+    }
+
+    function destroy_ticket(Ticket $ticket)
+    {
+        try {
+            DB::beginTransaction();
+            $ticket->delete();
+            $ticket->update([
+                'status'=> self::OPEN,
+            ]);
+            foreach ($ticket->responses_methode as $response) {
+                $response->update([
+                    'deleted_at' => Carbon::now()
+                ]);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            alert()->warning('تیکت و پاسخ های آن به دلیل وجود خطاحذف نگردید ');
             return redirect()->route('admin.index');
         }
+
+        alert()->success('تیکت و پاسخ های آن حذف گردید');
+        return redirect()->route('admin.index');
     }
-
-    function show(Ticket $ticket){
-
-        return view('admin.show',compact('ticket'));
-    }
-
-
-
 }

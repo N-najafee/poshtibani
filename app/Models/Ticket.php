@@ -12,8 +12,6 @@ class Ticket extends Model
     protected $table='tickets';
     protected $guarded=[];
 
-    protected $appends=['check_user'];
-
 
     function parent(){
         return $this->belongsTo(Ticket::class,'parent_id','id');
@@ -42,10 +40,6 @@ class Ticket extends Model
         }
     }
 
-    function getCheckUserAttribute(){
-        return $this->user_ticket()->where('role',"کاربر عادی")->first() ?? false ;
-
-    }
 
 
 }

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use GuzzleHttp\Promise\Create;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -15,6 +17,10 @@ class User extends Authenticatable
     function getIsActiveAttribute($value){
         return $value ? "فعال": "غیرفعال";
     }
+
+//    function setPasswordAttribute($value){
+////        return $this->attributes['password']=Hash::make($value);
+//    }
     /**
      * The attributes that are mass assignable.
      *

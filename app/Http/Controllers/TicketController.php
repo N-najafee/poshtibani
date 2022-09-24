@@ -30,12 +30,6 @@ class TicketController extends Controller
 
     public function index()
     {
-        if(auth()->user()->getraworiginal('role') === self::POSHTIBAN){
-            return redirect()->route('poshtiban.index');
-        }elseif (auth()->user()->getraworiginal('role') === self::ADMIN){
-            return redirect()->route('admin.index');
-        }
-
         $user = auth()->user();
         $tickets = Ticket::where('parent_id','!=',0)->where('user_id',$user->id)->orderby('title')->latest()->paginate(2);
         return view('ticket.show', compact('tickets'));
@@ -105,7 +99,6 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        return view('admin.edit_ticket',compact('ticket'));
     }
 
     /**
@@ -115,9 +108,8 @@ class TicketController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,Ticket $ticket)
     {
-        //
     }
 
     /**
@@ -128,8 +120,7 @@ class TicketController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
 
+    }
 
 }

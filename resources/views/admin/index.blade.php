@@ -8,9 +8,10 @@
                     <h1>مدیریت کاربران و تیکت ها</h1>
                 </div>
                 <h4>لیست موضوعات</h4>
+                <a href="{{route('admin.create.subject')}}" class="btn btn-outline-primary ms-1 mt-3 mb-3"><i class="fa fa-lg fa-plus"></i> ایجاد موضوع  </a>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered  text-center">
-                        <thead>
+                    <table class="table table-bordered  text-center">
+                        <thead >
                         <tr>
                             <th>ردیف</th>
                             <th>موضوعات</th>
@@ -21,12 +22,12 @@
                         <tbody>
                         @if(count($subjects)>0)
                         @foreach($subjects as $key=>$subject)
-                        <tr>
-                            <td>{{$subjects->firstitem()+$key}}</td>
+                        <tr class="{{$subject->trashed() ? "text-danger" : ""}}">
+                            <td>{{$key + 1}}</td>
                             <td>{{$subject->subject}}</td>
                             <td>{{$subject->description}}</td>
                             <td class="d-flex justify-content-center">
-                                <a href="{{route('admin.create.subject',['subject'=>$subject->id])}}" class="btn btn-outline-primary ms-1">مدیریت موضوعات</a>
+                                <a href="{{route('admin.edit.subject',['ticket'=>$subject->id])}}" class="btn btn-outline-primary ms-1">ویرایش</a>
                                 <form action="{{route('admin.destroy.subject',['subject'=>$subject->id])}}" method="post">
                                     @csrf
                                     @method('DELETE')
@@ -35,16 +36,13 @@
                             </td>
                         </tr>
                         @endforeach
-                        @else
-                        <div class="alert alert-danger" role="alert">
-                           موضوع برای نمایش وجود ندارد
-                        </div>
                         @endif
                         </tbody>
                     </table>
                 </div>
                 <h4>لیست کاربران</h4>
                 <div class="table-responsive">
+                    <a href="{{route('admin.create.user')}}" class="btn btn-outline-primary ms-1 mt-3 mb-3"><i class="fa fa-lg fa-plus"></i> ایجاد</a>
                     <table class="table table-striped table-bordered  text-center">
                         <thead>
                         <tr>
@@ -66,7 +64,7 @@
                                     <td>{{$user->role}}</td>
                                     <td><span class="{{$user->getraworiginal('is_active') ? "text-success" : "text-danger"}}">{{$user->is_active}}</span></td>
                                     <td>
-                                        <a href="{{route('admin.edit',['user'=>$user])}}" class="btn btn-outline-primary ms-1">ویرایش</a>
+                                        <a href="{{route('admin.edit.user',['user'=>$user])}}" class="btn btn-outline-primary ms-1">ویرایش</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -80,7 +78,7 @@
                 </div>
                 <h4>لیست تیکت ها</h4>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered  text-center">
+                    <table class="table  table-bordered  text-center">
                         <thead>
                         <tr>
                             <th>ردیف</th>
@@ -93,20 +91,20 @@
                         <tbody>
                         @if(count($tickets)>0)
                             @foreach($tickets as $key=>$ticket)
-                                <tr>
-                                    <td>{{$tickets->firstitem()+$key}}</td>
+                                <tr class="{{$ticket->trashed() ? "text-danger" : ""}}">
+                                    <td>{{$key + 1}}</td>
                                     <td>{{$ticket->title}}</td>
-                                    <td>{{$ticket->parent->subject}}</td>
+                                    <td>{{$ticket->trashed() ? "" : $ticket->parent->subject}}</td>
                                     <td>{{$ticket->status}}</td>
                                     <td>
                                         <a href="{{route('admin.show',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">نمایش</a>
-                                        <a href="" class="btn btn-outline-primary ms-1">ویرایش</a>
+                                        <a href="{{route('admin.edit.ticket',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">مدیریت تیکت ها</a>
                                     </td>
                                 </tr>
                             @endforeach
                         @else
                             <div class="alert alert-danger" role="alert">
-                                کاربری وجود ندارد
+                                تیکتی  وجود ندارد
                             </div>
                         @endif
                         </tbody>

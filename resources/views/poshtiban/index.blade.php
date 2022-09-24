@@ -24,7 +24,7 @@
                     <tr>
                         <td>{{$tickets->firstitem()+$key}}</td>
                         <td>{{$ticket->title}}</td>
-                        <td>{{$ticket->parent->subject}}</td>
+                        <td><span {{$ticket->trashed() ? "text-danger" : ""}}>{{$ticket->parent->subject}}</span></td>
                         <td><a href="{{url(env('UPLOAD_FILE').$ticket->attachment)}}" target="_blank">{{$ticket->attachment}}</a></td>
                         <td class="">{{count($ticket->responses_methode)}}</td>
                         <td class="">{{$ticket->status}}</td>
@@ -53,6 +53,13 @@
                     </tr>
                 @endforeach
             </table>
+        </div>
+        <div class="mt-5 col-12">
+            <div class="row justify-content-center p-5">
+                <div class="col-4">
+                    {{$tickets->render()}}
+                </div>
+            </div>
         </div>
 
     </div>

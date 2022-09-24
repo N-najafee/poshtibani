@@ -21,16 +21,8 @@ class PoshtibanController extends Controller
     }
 
     function index()
-
     {
-        if(auth()->user()->getraworiginal('role') === self::USER){
-            return redirect()->route('ticket.index');
-        }elseif (auth()->user()->getraworiginal('role') === self::ADMIN){
-            return redirect()->route('admin.index');
-        }
-
-//        ResponseFactory::new()->count(5)->create();
-        $tickets = Ticket::where('parent_id', '!=', 0)->latest()->paginate(5);
+        $tickets = Ticket::withTrashed()->where('parent_id', '!=', 0)->latest()->paginate(5);
         return view('poshtiban.index', compact('tickets'));
     }
 
