@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table='tickets';
     protected $guarded=[];
+
     protected $appends=['check_user'];
+
 
     function parent(){
         return $this->belongsTo(Ticket::class,'parent_id','id');

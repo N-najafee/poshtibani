@@ -16,6 +16,7 @@
                     <th>عنوان</th>
                     <th>موضوع</th>
                     <th>پیوست</th>
+                    <th>تعداد پاسخ</th>
                     <th>وضعیت</th>
                     <th>عملیات</th>
                 </tr>
@@ -24,18 +25,14 @@
                         <td>{{$tickets->firstitem()+$key}}</td>
                         <td>{{$ticket->title}}</td>
                         <td>{{$ticket->parent->subject}}</td>
-                        <td><a href="{{url(env('UPLOAD_FILE').$ticket->attachment)}}"
-                               target="_blank">{{$ticket->attachment}}</a></td>
+                        <td><a href="{{url(env('UPLOAD_FILE').$ticket->attachment)}}" target="_blank">{{$ticket->attachment}}</a></td>
+                        <td class="">{{count($ticket->responses_methode)}}</td>
                         <td class="">{{$ticket->status}}</td>
                         <td class="d-flex justify-content-center btn-group btn-group-justified">
-                            @if($ticket->getraworiginal('status') === \App\Models\Ticket::OPEN)
-                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}"
-                                   class="btn btn-outline-primary ms-5 me-5"> پاسخ</a>
-                            @elseif($ticket->getraworiginal('status') === \App\Models\Ticket::COMPLETED)
-                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}"
-                                   class="btn btn-outline-primary ms-5 me-5"> پاسخ</a>
+                            @if($ticket->getraworiginal('status') === \App\Models\Ticket::CLOSE)
+                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5">  نمایش پاسخ</a>
                             @else
-                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5"> نمایش پاسخ</a>
+                                <a href="{{route('poshtiban.create.response',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5"> پاسخ</a>
                             @endif
                             <div class="dropdown ">
                                 <button class="btn btn-outline-primary dropdown-toggle ms-5" type="button"
@@ -43,9 +40,13 @@
                                     تغییر وضعیت تیکت ها
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">باز</a></li>
-                                    <li><a class="dropdown-item" href="#">بسته</a></li>
-                                    <li><a class="dropdown-item" href="#">پاسخ داده شده</a></li>
+                                    <form action="{{route('poshtiban.change.status',['ticket'=>$ticket->id])}}" method="post">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="submit" class="dropdown-item fw-bold {{$ticket->getraworiginal('status') === \App\Models\Ticket::OPEN ? 'disabled' : ""}}" name="status[{{\App\Models\Ticket::OPEN}}]" value="باز">
+                                        <input type="submit" class="dropdown-item fw-bold {{$ticket->getraworiginal('status') === \App\Models\Ticket::COMPLETED ? 'disabled' : ""}}" name="status[{{\App\Models\Ticket::COMPLETED}}]" value="پاسخ داده شده">
+                                        <input type="submit" class="dropdown-item fw-bold {{$ticket->getraworiginal('status') === \App\Models\Ticket::CLOSE ? 'disabled' : ""}}" name="status[{{\App\Models\Ticket::CLOSE}}]" value="بسته">
+                                    </form>
                                 </ul>
                             </div>
                         </td>

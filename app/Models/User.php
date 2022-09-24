@@ -12,6 +12,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    function getIsActiveAttribute($value){
+        return $value ? "فعال": "غیرفعال";
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -24,8 +27,6 @@ class User extends Authenticatable
         'password',
         'role',
     ];
-
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -48,9 +49,9 @@ class User extends Authenticatable
 
     function getRoleAttribute($value)
     {
-        if ($this->value = self::USER) {
+        if ($value === self::USER) {
             return 'کاربر عادی';
-        } elseif ($this->value = self::POSHTIBAN) {
+        } elseif ($value === self::POSHTIBAN) {
             return ' پشتیبان';
         } else {
             return 'مدیر';

@@ -2,24 +2,25 @@
 @section('title','index')
 @section('style')
     <style>
-        .hid{
+        .hid {
             display: none;
         }
-        .show{
+
+        .show {
             display: block;
         }
     </style>
 @endsection
 @section('script')
-<script>
+    <script>
 
-    let more_responses=document.getElementById('more');
+        let more_responses = document.getElementById('more');
 
-    function show_response(){
-        more_responses.classList.toggle('show');
-        more_responses.classList.toggle('hid');
-    }
-</script>
+        function show_response() {
+            more_responses.classList.toggle('show');
+            more_responses.classList.toggle('hid');
+        }
+    </script>
 @endsection
 @section('content')
     <div class="container">
@@ -30,7 +31,8 @@
                     <h3>لیست تیکت ها </h3>
                 </div>
                 <div class="col-6 text-start">
-                    <a href="{{route('ticket.create')}}"><h3 class="btn btn-outline-primary">ایجاد تیکت <i class="fa fa-lg fa-plus"></i></h3></a>
+                    <a href="{{route('ticket.create')}}"><h3 class="btn btn-outline-primary">ایجاد تیکت <i
+                                class="fa fa-lg fa-plus"></i></h3></a>
                 </div>
                 <hr>
             </div>
@@ -46,7 +48,7 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title"> عنوان تیکت : {{$ticket->title}} </h4>
-                            <h4> <i class="fa fa-clock"></i> {{$ticket->created_at}}</h4>
+                            <h4><i class="fa fa-clock"></i> {{$ticket->created_at}}</h4>
                             <span>توضیحات تیکت :</span>
                             <p class="card-text">{{$ticket->description}}</p>
                             @if($ticket->attachment)
@@ -83,23 +85,28 @@
                         </div>
                         <!-- end Modal -->
                         <div class="card bg-light p-2 list-inline">
-                            <h3 class="card-title "> پاسخ ها:  </h3>
+                            <h3 class="card-title "> پاسخ ها: </h3>
                             @if(count($ticket->responses_methode)>0)
-                            @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
-                                    <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط :  {{$response->user_response->name}}</h4>
-                                    <h4 class="{{$loop->first ? "text-info" : ""}}"> <i class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i>  {{$response->created_at}}</h4>
-                 <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
-                                <hr>
-                            @endforeach
-                            <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده پاسخ های بیشتر </button >
+                                @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
+                                    <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
+                                        : {{$response->user_response->name}}</h4>
+                                    <h4 class="{{$loop->first ? "text-info" : ""}}"><i
+                                            class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
+                                    </h4>
+                                    <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
+                                    <hr>
+                                @endforeach
+                                <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده پاسخ
+                                    های بیشتر
+                                </button>
                             @endif
-                        @if(count($ticket->responses_methode->slice(2))>0)
+                            @if(count($ticket->responses_methode->slice(2))>0)
                                 <div id="more" class="hid mt-3">
-                            @foreach($ticket->responses_methode->slice(2) as $key=>$response)
-                                        <h4>{{$key+1}} _ پاسخ داده شده توسط :  {{$response->user_response->name}}</h4>
-                                        <h4> <i class="fa fa-clock"></i>  {{$response->created_at}}</h4>
-                                        <h5 class="p-2 text-muted"  >  {{$response->description}}</h5>
-                                <hr>
+                                    @foreach($ticket->responses_methode->slice(2) as $key=>$response)
+                                        <h4>{{$key+1}} _ پاسخ داده شده توسط : {{$response->user_response->name}}</h4>
+                                        <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
+                                        <h5 class="p-2 text-muted">  {{$response->description}}</h5>
+                                        <hr>
                                     @endforeach
                                 </div>
 
@@ -108,14 +115,14 @@
                     </div>
                 </div>
             @endforeach
-                                    <div class="mt-5 col-12">
-            <div class="row justify-content-center p-5">
-                <div class="col-4">
-                    {{$tickets->render()}}
+            <div class="mt-5 col-12">
+                <div class="row justify-content-center p-5">
+                    <div class="col-4">
+                        {{$tickets->render()}}
+                    </div>
                 </div>
+                <!-- end main body -->
             </div>
-            <!-- end main body -->
         </div>
-    </div>
 
 @endsection

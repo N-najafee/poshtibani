@@ -157,6 +157,8 @@ return [
         'longitude'             => 'طول جغرافیایی',
         'latitude'              => 'عرض جغرافیایی',
         'subject_parent'              => 'موضوع',
+        'name_subject'              => 'نام موضوع',
+        'subject'              => 'موضوع',
     ],
 
 ];
