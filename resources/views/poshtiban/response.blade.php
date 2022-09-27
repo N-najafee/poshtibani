@@ -44,7 +44,7 @@
                         <span>توضیحات تیکت :</span>
                         <p class="card-text">{{$ticket->description}}</p>
                         <h5>تیکت در وضعیت <span class="text-info">{{$ticket->status}}</span> می باشد. </h5>
-                        <a href="{{route('poshtiban.index')}}" class="btn btn-outline-dark">بازگشت</a>
+                        <a href="{{route('poshtiban.response.index')}}" class="btn btn-outline-dark">بازگشت</a>
                     @if($ticket->attachment)
                                     <button type="button" class="btn btn-outline-primary m-2 ms-5"
                                             data-bs-toggle="modal"
@@ -76,12 +76,12 @@
                                         </div>
                                     </div>
                                     @endif
-                        @if($ticket->getraworiginal('status') !== \App\Models\Ticket::CLOSE)
+                        @if($ticket->getraworiginal('status') !== \App\Http\Consts\Ticketconsts::CLOSE)
                                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
                                         پاسخ به سوال
                                     </button>
                                     <div class="collapse collapse-horizontal" id="collapseWidthExample">
-                                        <form action="{{route('poshtiban.store.response',['ticket'=>$ticket->id])}}" method="post">
+                                        <form action="{{route('poshtiban.response.store',['ticket'=>$ticket->id])}}" method="post">
                                             @csrf
                                             <textarea class="card card-body mt-3" name="text" cols="105"
                                                       rows="5">{{old('text')}}</textarea>
@@ -95,12 +95,12 @@
                                 <h3 class="card-title "> پاسخ ها: </h3>
                                 @if(count($ticket->responses_methode)>0)
                                     @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
-                                        <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
+                                        <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
                                             : {{$response->user_response->name}}</h4>
-                                        <h4 class="{{$loop->first ? "text-info" : ""}}"><i
-                                                class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
+                                        <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
+                                                class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
                                         </h4>
-                                        <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
+                                        <h5 class="p-2 {{$loop->first ? 'text-info' : ''}}">   {{$response->description}}</h5>
                                         <hr>
                                     @endforeach
                                     <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده

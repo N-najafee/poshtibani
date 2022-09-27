@@ -18,7 +18,7 @@
             <div class="row ">
                 <div class="form-group col-3">
                     <label>عنوان</label>
-                    <input class="form-control @error('title')  is-invalid @enderror" type="text" name="title" value="{{old('title')}}">
+                    <input class="form-control @error('title')  is-invalid @enderror " type="text" name="title" value="{{old('title')}}">
                 </div>
                 <div class="form-group col-3">
                     <label>موضوع</label>

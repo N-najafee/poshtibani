@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PoshtibanController;
+use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Database\Factories\ResponseFactory;
@@ -20,10 +20,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
 
 
 Auth::routes();
@@ -32,18 +28,18 @@ Route::get('factory',function (){
   ResponseFactory::new()->count(5)->create();
   UserFactory::new()->count(3)->create();
 });
+
 Route::get('/home', [HomeController::class,'index'])->name('home');
 
-Route::prefix('/poshtiban')->group(function (){
-    Route::get('/', [PoshtibanController::class,'index'])->name('poshtiban.index')->middleware('Checkposhtiban');
-    Route::get('/poshtiban/create_response/{ticket}', [PoshtibanController::class,'create_response'])->name('poshtiban.create.response')->middleware('Checkposhtiban');
-    Route::post('/poshtiban/store_response/{ticket}', [PoshtibanController::class,'store_response'])->name('poshtiban.store.response')->middleware('Checkposhtiban');
-    Route::put('/poshtiban/change_status/{ticket}', [PoshtibanController::class,'change_status'])->name('poshtiban.change.status')->middleware('Checkposhtiban');
+Route::prefix('/poshtiban')->name('poshtiban.')->group(function (){
+    Route::resource('response',ResponseController::class)->only('index')->middleware('Checkposhtiban');
+    Route::get('create/{ticket}',[ResponseController::class,'create'])->name('response.create')->middleware('Checkposhtiban');
+    Route::post('store/{ticket}',[ResponseController::class,'store'])->name('response.store')->middleware('Checkposhtiban');
+    Route::put('update/{ticket}',[ResponseController::class,'update'])->name('response.update')->middleware('Checkposhtiban');
 });
 
 Route::prefix('admin')->group(function(){
     Route::get('/', [AdminController::class,'index'])->name('admin.index');
-    Route::get('/show/{ticket}', [AdminController::class,'show'])->name('admin.show');
     Route::get('/create_subject', [AdminController::class,'create_subject'])->name('admin.create.subject');
     Route::post('/store_subject/{user}', [AdminController::class,'store_subject'])->name('admin.store.subject');
     Route::get('/edit_subject/{ticket}', [AdminController::class,'edit_subject'])->name('admin.edit.subject');
@@ -53,12 +49,12 @@ Route::prefix('admin')->group(function(){
     Route::post('/store_user', [UserController::class,'store_user'])->name('admin.store.user');
     Route::get('/edit_user/{user}', [UserController::class,'edit_user'])->name('admin.edit.user');
     Route::put('/update_user/{uuser}', [UserController::class,'update_user'])->name('admin.update.user');
-    Route::get('/edit_ticket/{ticket}', [AdminController::class,'edit_ticket'])->name('admin.edit.ticket');
-    Route::put('/update_ticket/{ticket}', [AdminController::class,'update_ticket'])->name('admin.update.ticket');
-    Route::delete('/destroy_ticket/{ticket}', [AdminController::class,'destroy_ticket'])->name('admin.destroy.ticket');
-
-
 });
 
-Route::resource("ticket",TicketController::class)->middleware('Checkuser');
+Route::resource("ticket",TicketController::class)->except(['show','edit','update','destroy'])->middleware('Checkuser');
+
+
+Route::prefix('/admin')->name('admin.')->group(function (){
+    Route::resource("ticket",TicketController::class)->only(['show','edit','update','destroy'])->middleware('Checkadmin');
+});
 

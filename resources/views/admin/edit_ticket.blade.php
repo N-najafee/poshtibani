@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','show ticket')
+@section('title','edit ticket')
 @section('style')
     <style>
         .hid {
@@ -25,7 +25,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <!-- top list -->
-            <div class="row justify-content-between ">
+            <div class="row justify-content-between">
                 <div class="col-6 text-end">
                     <h3>تیکت {{ $ticket->title }} </h3>
                 </div>
@@ -43,7 +43,7 @@
                         <span>توضیحات تیکت :</span>
                         <p class="card-text">{{$ticket->description}}</p>
                         <h5>تیکت در وضعیت <span class="text-info">{{$ticket->status}}</span> می باشد. </h5>
-                        <a href="{{route('poshtiban.index')}}" class="btn btn-outline-dark">بازگشت</a>
+                        <a href="{{route('admin.index')}}" class="btn btn-outline-dark">بازگشت</a>
                         @if($ticket->attachment)
                             <button type="button" class="btn btn-outline-primary m-2 ms-5"
                                     data-bs-toggle="modal"
@@ -62,7 +62,7 @@
                                             <div class="card-img">
                                                 <div class="card-img-top">
                                                     <img style="width: 450px; height:250px"
-                                                         src=" {{(url(env('UPLOAD_FILE').$ticket->attachment))}}">
+                                                         src="{{(url(env('UPLOAD_FILE').$ticket->attachment))}}" alt="img">
                                                 </div>
                                             </div>
                                         </div>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         @endif
-                        <form  action="{{route('admin.destroy.ticket',['ticket'=>$ticket->id])}}" method="post">
+                        <form action="{{route('admin.ticket.destroy',['ticket'=>$ticket->id])}}" method="post">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-outline-danger col-3 mt-3">حذف</button>
@@ -84,35 +84,40 @@
                     </div>
                 </div>
                 <div class="card bg-light p-2 list-inline">
-                    <h3 class="card-title "> پاسخ ها: </h3>
+                    <h3 class="card-title"> پاسخ ها: </h3>
                     @if(count($ticket->responses_methode)>0)
                         @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
-                            <form action="{{route('admin.update.ticket',['ticket'=>$ticket->id])}}" method="post">
+                            <form action="{{route('admin.ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                 @csrf
                                 @method('PUT')
-                            <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                : {{$response->user_response->name}}</h4>
-                            <h4 class="{{$loop->first ? "text-info" : ""}}"><i class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}</h4>
-                                <textarea class="p-2 form-control {{$loop->first ? "text-info" : ""}}" name="response[{{$response->id}}]}}"> {{$response->description}} </textarea>
-                                <button  class="btn btn-outline-primary mt-3">ویرایش</button>
+                                <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
+                                    : {{$response->user_response->name}}</h4>
+                                <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
+                                        class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
+                                </h4>
+                                <label></label>
+                                <textarea class="p-2 form-control {{$loop->first ? 'text-info' : ''}}"
+                                          name="response[{{$response->id}}]"> {{$response->description}} </textarea>
+                                <button class="btn btn-outline-primary mt-3">ویرایش</button>
                             </form>
                             <hr>
                         @endforeach
-                        <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده
-                            پاسخ های بیشتر
+                        <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده پاسخ های
+                            بیشتر
                         </button>
                     @endif
                     @if(count($ticket->responses_methode->slice(2))>0)
                         <div id="more" class="hid mt-3">
                             @foreach($ticket->responses_methode->slice(2) as $key=>$response)
-                                <form action="{{route('admin.update.ticket',['ticket'=>$ticket->id])}}" method="post">
+                                <form action="{{route('admin.ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                     @csrf
                                     @method('PUT')
-                                <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                    : {{$response->user_response->name}}</h4>
-                                <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
-                                    <textarea class="p-2 form-control text-muted"  name="response[${{$response->id}}]" >  {{$response->description}} </textarea>
-                                    <button  class="btn btn-outline-primary mt-3">ویرایش</button>
+                                    <h4>{{$key+1}} _ پاسخ داده شده توسط
+                                        : {{$response->user_response->name}}</h4>
+                                    <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
+                                    <label></label>
+                                    <textarea class="p-2 form-control text-muted" name="response[{{$response->id}}]">  {{$response->description}} </textarea>
+                                    <button class="btn btn-outline-primary mt-3">ویرایش</button>
                                 </form>
                                 <hr>
                             @endforeach

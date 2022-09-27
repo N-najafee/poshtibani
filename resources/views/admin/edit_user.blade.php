@@ -25,9 +25,9 @@
                 <div class="form-group col-3">
                     <label>نقش کاربر</label>
                     <select class="form-select" name="role">
-                            <option value="{{\App\Models\User::USER}}"   {{$user->getraworiginal('role') === \App\Models\User::USER ? "selected" : ""}}>کاربر عادی</option>
-                            <option value="{{\App\Models\User::ADMIN}}"   {{$user->getraworiginal('role') === \App\Models\User::ADMIN ? "selected" : ""}}> مدیر</option>
-                            <option value="{{\App\Models\User::POSHTIBAN}}"   {{$user->getraworiginal('role') === \App\Models\User::POSHTIBAN ? "selected" : ""}}>پشتیبان</option>
+                            <option value="{{\App\Http\Consts\Userconsts::USER}}"   {{$user->getraworiginal('role') === \App\Http\Consts\Userconsts::USER ? "selected" : ""}}>کاربر عادی</option>
+                            <option value="{{\App\Http\Consts\Userconsts::ADMIN}}"   {{$user->getraworiginal('role') === \App\Http\Consts\Userconsts::ADMIN ? "selected" : ""}}> مدیر</option>
+                            <option value="{{\App\Http\Consts\Userconsts::POSHTIBAN}}"   {{$user->getraworiginal('role') === \App\Http\Consts\Userconsts::POSHTIBAN ? "selected" : ""}}>پشتیبان</option>
                     </select>
                 </div>
                 <div class="form-group col-3">

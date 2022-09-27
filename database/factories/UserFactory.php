@@ -2,11 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Http\Consts\Userconsts;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
+
     /**
      * Define the model's default state.
      *
@@ -15,9 +18,9 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' =>$this->faker->randomElement(['admin','poshtiban','user']),
             'email' => $this->faker->unique()->safeEmail(),
-            'role'=>$this->faker->numberBetween(1,3),
+            'role'=>Userconsts::USER,
             'email_verified_at' => now(),
             'password' => '$2y$10$iDxsauYaUssC5uGfuilGXu7C4BBM03OjBgiBHvix0VVgVWVzzwi1K', // password
             'remember_token' => Str::random(10),

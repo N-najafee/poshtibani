@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        if(!auth()->user()){
+        if (!auth()->user()) {
             $this->middleware('auth');
         }
         $this->middleware('Checkadmin');
@@ -26,24 +27,21 @@ class UserController extends Controller
     function store_user(Request $request)
     {
         $request->validate([
-            'name'=>'required',
-            'email'=>'required|email|unique:users,email',
-            'password'=>'required|min:8',
-            'confirm_password'=>'required|current_password:web',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'confirm_password' => 'required|current_password:web',
         ]);
 
         User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>$request->password,
-            'is_active'=>$request->is_active,
-            'role'=>$request->role,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => hash::make($request->password,),
+            'is_active' => $request->is_active,
+            'role' => $request->role,
         ]);
         alert()->success(' کاربر ایجاد گردید.');
         return redirect()->route('admin.index');
-//        dd($request->all());
-
-
     }
 
     function edit_user(User $user)
@@ -54,7 +52,7 @@ class UserController extends Controller
 
     function update_user(Request $request, User $uuser)
     {
-        if(Gate::allows('update', $uuser)) {
+        if (Gate::allows('update',$uuser)) {
             $request->validate([
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email,' . $uuser->id,
@@ -68,7 +66,7 @@ class UserController extends Controller
 
             alert()->success(' کاربر ویرایش گردید.');
             return redirect()->route('admin.index');
-        }else{
+        } else {
 
             alert()->error('ویرایش توسط مدیر انجام می گردد.');
             return redirect()->route('admin.index');

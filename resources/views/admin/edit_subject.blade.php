@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title',"create subject")
+@section('title',"edit subject")
 
 @section('content')
     <div class="col-10 mt-5">

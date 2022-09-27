@@ -43,7 +43,7 @@
                         <span>توضیحات تیکت :</span>
                         <p class="card-text">{{$ticket->description}}</p>
                         <h5>تیکت در وضعیت <span class="text-info">{{$ticket->status}}</span> می باشد. </h5>
-                        <a href="{{route('poshtiban.index')}}" class="btn btn-outline-dark">بازگشت</a>
+                        <a href="{{route('admin.index')}}" class="btn btn-outline-dark">بازگشت</a>
                         @if($ticket->attachment)
                             <button type="button" class="btn btn-outline-primary m-2 ms-5"
                                     data-bs-toggle="modal"

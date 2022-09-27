@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Consts\Userconsts;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+
+
     use HasApiTokens, HasFactory, Notifiable;
 
     function getIsActiveAttribute($value){
@@ -32,6 +35,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'is_active',
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -55,9 +59,9 @@ class User extends Authenticatable
 
     function getRoleAttribute($value)
     {
-        if ($value === self::USER) {
+        if ($value === Userconsts::USER) {
             return 'کاربر عادی';
-        } elseif ($value === self::POSHTIBAN) {
+        } elseif ($value === Userconsts::POSHTIBAN) {
             return ' پشتیبان';
         } else {
             return 'مدیر';

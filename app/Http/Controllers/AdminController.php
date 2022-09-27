@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Consts\Ticketconsts;
 use App\Models\Response;
 use App\Models\Ticket;
 use App\Models\User;
@@ -19,7 +20,7 @@ class AdminController extends Controller
         if (!auth()->user()) {
             $this->middleware('auth');
         }
-        $this->middleware('Checkadmin');
+      $this->middleware('Checkadmin');
 
     }
 
@@ -66,7 +67,6 @@ class AdminController extends Controller
 
     function update_subject(Request $request, Ticket $ticket, $user)
     {
-//        dd($request->all());
         $request->validate([
             'subject' => 'required',
         ]);
@@ -74,7 +74,7 @@ class AdminController extends Controller
         $ticket->update([
             'subject' => $request->subject,
             'title' => $request->subject,
-            'description' => $request->description == "" ? $request->subject : $request->description,
+            'description' => $request->description === "" ? $request->subject : $request->description,
             'user_id'=>$user,
         ]);
         alert()->success('موضوع با موفقیت ویرایش گردید');
@@ -92,7 +92,7 @@ class AdminController extends Controller
                 $child->update([
                     'deleted_at' => Carbon::now(),
                 ]);
-                foreach ($child->response_methode as $response) {
+                foreach ($child->responses_methode as $response) {
                     $response->update([
                         'deleted_at' => Carbon::now(),
                     ]);
@@ -109,54 +109,4 @@ class AdminController extends Controller
         return redirect()->route('admin.index');
     }
 
-    function show(Ticket $ticket)
-    {
-
-        return view('admin.show_ticket', compact('ticket'));
-    }
-
-    function edit_ticket(Ticket $ticket)
-    {
-
-        return view('admin.edit_ticket', compact('ticket'));
-    }
-
-    function update_ticket(Request $request, Ticket $ticket)
-    {
-        $request->validate([
-           'response'=>'required',
-        ]);
-
-       Response::find(key($request->response))->update([
-           'description'=>array_values($request->response),
-           'user_id'=>auth()->user()->id,
-           'updated_at'=>Carbon::now(),
-       ]);
-        alert()->success('پاسخ تیکت ویرایش گردید');
-        return redirect()->route('admin.index');
-
-    }
-
-    function destroy_ticket(Ticket $ticket)
-    {
-        try {
-            DB::beginTransaction();
-            $ticket->delete();
-            $ticket->update([
-                'status'=> self::OPEN,
-            ]);
-            foreach ($ticket->responses_methode as $response) {
-                $response->update([
-                    'deleted_at' => Carbon::now()
-                ]);
-            }
-            DB::commit();
-        } catch (Exception $e) {
-            alert()->warning('تیکت و پاسخ های آن به دلیل وجود خطاحذف نگردید ');
-            return redirect()->route('admin.index');
-        }
-
-        alert()->success('تیکت و پاسخ های آن حذف گردید');
-        return redirect()->route('admin.index');
-    }
 }

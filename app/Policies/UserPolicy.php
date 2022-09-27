@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Consts\Userconsts;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -49,10 +50,10 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user,User $uuser)
+    public function update(User $user)
     {
 
-        return $user->getRawOriginal('role') === 1;
+        return $user->getRawOriginal('role') === Userconsts::ADMIN;
     }
 
     /**

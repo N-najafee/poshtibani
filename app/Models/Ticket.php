@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Consts\Ticketconsts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ticket extends Model
 {
     use HasFactory,SoftDeletes;
+
     protected $table='tickets';
     protected $guarded=[];
 
@@ -31,9 +33,9 @@ class Ticket extends Model
 
     function getStatusAttribute($value){
 
-        if($value === self::OPEN){
+        if($value === Ticketconsts::OPEN){
             return 'باز';
-        }elseif ($value === self::COMPLETED){
+        }elseif ($value === Ticketconsts::COMPLETED){
             return 'پاسخ داده شده';
         }else{
             return 'بسته';

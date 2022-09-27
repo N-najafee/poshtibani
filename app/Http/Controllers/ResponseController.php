@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Response;
+use App\Models\Ticket;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ResponseController extends Controller
 {
@@ -11,9 +15,18 @@ class ResponseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        if (!auth()->user()) {
+            $this->middleware('auth');
+        }
+    }
+
     public function index()
     {
-
+        $tickets = Ticket::withTrashed()->where('parent_id', '!=', 0)->latest()->paginate(5);
+        return view('poshtiban.index', compact('tickets'));
     }
 
     /**
@@ -21,9 +34,9 @@ class ResponseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Ticket $ticket)
     {
-        //
+        return view('poshtiban.response', compact('ticket'));
     }
 
     /**
@@ -32,9 +45,29 @@ class ResponseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,Ticket $ticket)
     {
-        //
+        $request->validate([
+            'text' => 'required',
+        ]);
+        try {
+            DB::beginTransaction();
+            Response::create([
+                'ticket_id' => $ticket->id,
+                'user_id' => auth()->user()->id,
+                'description' => trim($request->text),
+            ]);
+            $ticket->update([
+                'status' => $ticket->getRawOriginal('status') ? 2 : 2,
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            alert()->error("خطا در ثبت پاسخ ");
+            return redirect()->back();
+        }
+        alert()->success("پاسخ شما با موفقیت ثبت گردید");
+        return redirect()->route('poshtiban.response.index');
     }
 
     /**
@@ -66,9 +99,17 @@ class ResponseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Ticket $ticket)
     {
-        //
+        $ticket_status=$ticket->getraworiginal('status');
+        if($ticket_status !== key($request->status) ){
+            $ticket->update([
+                'status'=> key($request->status) ,
+            ]);
+        }
+        $status=implode($request->status);
+        alert()->success("  وضعیت تیکت به $status تغییر پیدا کرد ")->addButton("ok","ok");
+        return redirect()->back();
     }
 
     /**

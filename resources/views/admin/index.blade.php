@@ -84,6 +84,7 @@
                             <th>ردیف</th>
                             <th>عنوان</th>
                             <th>موضوع</th>
+                            <th>تعداد پاسخ ها</th>
                             <th>وضعیت</th>
                             <th>عملیات</th>
                         </tr>
@@ -95,10 +96,11 @@
                                     <td>{{$key + 1}}</td>
                                     <td>{{$ticket->title}}</td>
                                     <td>{{$ticket->trashed() ? "" : $ticket->parent->subject}}</td>
+                                    <td>{{count($ticket->responses_methode)}}</td>
                                     <td>{{$ticket->status}}</td>
                                     <td>
-                                        <a href="{{route('admin.show',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">نمایش</a>
-                                        <a href="{{route('admin.edit.ticket',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1">مدیریت تیکت ها</a>
+                                        <a href="{{route('admin.ticket.show',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1 {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}">نمایش</a>
+                                        <a href="{{route('admin.ticket.edit',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-1  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}">مدیریت تیکت ها</a>
                                     </td>
                                 </tr>
                             @endforeach

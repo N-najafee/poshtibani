@@ -159,6 +159,11 @@ return [
         'subject_parent'              => 'موضوع',
         'name_subject'              => 'نام موضوع',
         'subject'              => 'موضوع',
+        'confirm_password'              => 'تکرار',
+        'current_password' => 'رمزعبور صحیح نمیباشد.',
+        'password' => 'رمزعبور صحیح نمیباشد.',
+
+
     ],
 
 ];

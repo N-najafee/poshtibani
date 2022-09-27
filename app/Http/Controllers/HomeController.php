@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
+use App\Http\Consts\Userconsts;
 use Illuminate\Http\Request;
 use UxWeb\SweetAlert\SweetAlert;
 
@@ -25,10 +25,10 @@ class HomeController extends Controller
      */
     function index()
     {
-        if(auth()->user()->getraworiginal('role') === self::USER){
+        if(auth()->user()->getraworiginal('role') === Userconsts::USER){
        return redirect()->route('ticket.index');
-    }elseif (auth()->user()->getraworiginal('role') === self::POSHTIBAN){
-            return redirect()->route('poshtiban.index');
+    }elseif (auth()->user()->getraworiginal('role') === Userconsts::POSHTIBAN){
+            return redirect()->route('poshtiban.response.index');
         }else{
             return redirect()->route('admin.index');
 

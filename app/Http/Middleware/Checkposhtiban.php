@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Consts\Userconsts;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class Checkposhtiban
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->getraworiginal('role') === 2){
+        if(auth()->user()->getraworiginal('role') === Userconsts::POSHTIBAN){
             return $next($request);
         }else{
             return redirect('home');

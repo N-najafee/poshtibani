@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','index')
+@section('title','show ticket')
 @section('style')
     <style>
         .hid {
@@ -48,7 +48,10 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title"> عنوان تیکت : {{$ticket->title}} </h4>
-                            <h4><i class="fa fa-clock"></i> {{$ticket->created_at}}</h4>
+                            <h4> تاریخ ایجاد : <i class="fa fa-clock"></i> {{$ticket->created_at}}</h4>
+                            @if($ticket->deleted_at)
+                            <h4 class="text-danger"> تاریخ حذف  :<i class="fa fa-clock text-danger"></i> {{$ticket->deleted_at}}</h4>
+                            @endif
                             <span>توضیحات تیکت :</span>
                             <p class="card-text">{{$ticket->description}}</p>
                             @if($ticket->attachment)

@@ -16,12 +16,5 @@ class Controller extends BaseController
      *
      * @var integer
      */
-    //roles
-    const ADMIN= 1;
-    const POSHTIBAN = 2;
-    const USER =3;
-    //status
-    const OPEN = 1;
-    const COMPLETED =2;
-    const CLOSE = 3;
+
 }

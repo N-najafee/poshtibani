@@ -14,8 +14,8 @@ class ResponseFactory extends Factory
     public function definition()
     {
         return [
-            'description'=>$this->faker->text(rand(30,60)),
-            'user_id'=>$this->faker->numberBetween(1,3),
+            'description'=>$this->faker->text(rand(60,100)),
+            'user_id'=>$this->faker->numberBetween(4,6),
             'ticket_id'=>$this->faker->numberBetween(3,6),
         ];
     }

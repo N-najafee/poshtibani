@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Consts\Userconsts;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class Checkuser
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->getraworiginal('role') === 3){
+        if(auth()->user()->getraworiginal('role') === Userconsts::USER){
             return $next($request);
         }else{
             return redirect()->route('home');
