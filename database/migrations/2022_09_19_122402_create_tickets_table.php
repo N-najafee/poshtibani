@@ -17,9 +17,9 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->foreignId("user_id");
             $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
-            $table->unsignedInteger("parent_id");
+            $table->foreignId("subject_id");
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
             $table->string("title");
-            $table->string("subject");
             $table->text('description');
             $table->tinyInteger('status')->default(1);
             $table->string('attachment')->nullable();
