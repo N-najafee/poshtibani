@@ -11,7 +11,7 @@
             </div>
             <hr>
         </div>
-        <form action="{{route('ticket.store',['user'=>$user->id])}}" method="post" autocomplete="off" enctype="multipart/form-data">
+        <form action="{{route('ticket.store')}}" method="post" autocomplete="off" enctype="multipart/form-data">
             @csrf
             @include('files.error')
 
@@ -22,9 +22,9 @@
                 </div>
                 <div class="form-group col-3">
                     <label>موضوع</label>
-                    <select class="form-select" type="text" name="subject_parent">
+                    <select class="form-select" type="text" name="subject">
                         @foreach($subjects as $subject)
-                        <option value="{{$subject->id}}">{{$subject->subject}}</option>
+                        <option value="{{$subject->id}}">{{$subject->name}}</option>
                             @endforeach
                     </select>
                 </div>

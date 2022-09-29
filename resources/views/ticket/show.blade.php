@@ -44,7 +44,7 @@
                 <div class="col-8 m-4">
                     <div class="card">
                         <div class="card-header">
-                            <h4> موضوع : {{$ticket->parent->subject}} </h4>
+                            <h4> موضوع : {{$ticket->subject->name}} </h4>
                         </div>
                         <div class="card-body">
                             <h4 class="card-title"> عنوان تیکت : {{$ticket->title}} </h4>
@@ -89,13 +89,21 @@
                         <!-- end Modal -->
                         <div class="card bg-light p-2 list-inline">
                             <h3 class="card-title "> پاسخ ها: </h3>
-                            @if(count($ticket->responses_methode)>0)
-                                @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
+                            @if(count($ticket->responses)>0)
+                                @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
+                                    @if($response->updated_at)
+                                        <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ ویرایش شده توسط
+                                            : {{$response->user_response->name}}</h4>
+                                        <h4 class="{{$loop->first ? "text-info" : ""}}"><i
+                                                class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->updated_at}}
+                                        </h4>
+                                    @else
                                     <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
                                         : {{$response->user_response->name}}</h4>
                                     <h4 class="{{$loop->first ? "text-info" : ""}}"><i
                                             class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
                                     </h4>
+                                    @endif
                                     <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
                                     <hr>
                                 @endforeach
@@ -103,11 +111,19 @@
                                     های بیشتر
                                 </button>
                             @endif
-                            @if(count($ticket->responses_methode->slice(2))>0)
+                            @if(count($ticket->responses->slice(2))>0)
                                 <div id="more" class="hid mt-3">
-                                    @foreach($ticket->responses_methode->slice(2) as $key=>$response)
+                                    @foreach($ticket->responses->slice(2) as $key=>$response)
+                                        @if($response->updated_at)
+                                            <h4> {{$key+1}} _ پاسخ ویرایش شده توسط
+                                                : {{$response->user_response->name}}</h4>
+                                            <h4><i
+                                                    class="fa fa-clock"></i> {{$response->updated_at}}
+                                            </h4>
+                                        @else
                                         <h4>{{$key+1}} _ پاسخ داده شده توسط : {{$response->user_response->name}}</h4>
                                         <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
+                                        @endif
                                         <h5 class="p-2 text-muted">  {{$response->description}}</h5>
                                         <hr>
                                     @endforeach
@@ -127,5 +143,4 @@
                 <!-- end main body -->
             </div>
         </div>
-
 @endsection
