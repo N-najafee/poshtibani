@@ -11,20 +11,23 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        if (!auth()->user()) {
-            $this->middleware('auth');
-        }
-        $this->middleware('Checkadmin');
+
     }
 
-    function create_user()
+    function index()
     {
 
+        return redirect()->route('admin.index');
+    }
+
+    function create()
+    {
+        $this->authorize('create', User::class);
         return view('admin.create_user');
 
     }
 
-    function store_user(Request $request)
+    function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -44,33 +47,28 @@ class UserController extends Controller
         return redirect()->route('admin.index');
     }
 
-    function edit_user(User $user)
-    {
 
+    function edit(User $user)
+    {
+        $this->authorize('update', $user);
         return view('admin.edit_user', compact('user'));
     }
 
-    function update_user(Request $request, User $uuser)
+    function update(Request $request, User $user)
     {
-        if (Gate::allows('update',$uuser)) {
-            $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,email,' . $uuser->id,
-            ]);
-            $uuser->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'is_active' => ($request->is_active),
-                'role' => $request->role,
-            ]);
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'is_active' => ($request->is_active),
+            'role' => $request->role,
+        ]);
 
-            alert()->success(' کاربر ویرایش گردید.');
-            return redirect()->route('admin.index');
-        } else {
-
-            alert()->error('ویرایش توسط مدیر انجام می گردد.');
-            return redirect()->route('admin.index');
-        }
+        alert()->success(' کاربر ویرایش گردید.');
+        return redirect()->route('admin.index');
     }
 
 }

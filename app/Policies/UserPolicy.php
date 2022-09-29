@@ -18,7 +18,6 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -41,6 +40,8 @@ class UserPolicy
      */
     public function create(User $user)
     {
+        return $user->getRawOriginal('role') === Userconsts::ADMIN;
+
     }
 
     /**
@@ -52,7 +53,6 @@ class UserPolicy
      */
     public function update(User $user)
     {
-
         return $user->getRawOriginal('role') === Userconsts::ADMIN;
     }
 

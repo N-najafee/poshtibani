@@ -9,7 +9,7 @@
             </div>
             <hr>
         </div>
-        <form action="{{route('admin.store.user')}}" method="post" autocomplete="off" >
+        <form action="{{route('user.store')}}" method="post" autocomplete="off" >
             @csrf
             @include('files.error')
             <div class="row ">

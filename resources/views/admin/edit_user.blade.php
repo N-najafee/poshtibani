@@ -9,7 +9,7 @@
             </div>
             <hr>
         </div>
-        <form action="{{route('admin.update.user',['uuser'=>$user->id])}}" method="post" autocomplete="off" >
+        <form action="{{route('user.update',['user'=>$user->id])}}" method="post" autocomplete="off" >
             @csrf
             @method('PUT')
             @include('files.error')
