@@ -25,11 +25,11 @@ class HomeController extends Controller
      */
     function index()
     {
-        if(auth()->user()->getraworiginal('role') === Userconsts::USER){
-       return redirect()->route('ticket.index');
-    }elseif (auth()->user()->getraworiginal('role') === Userconsts::POSHTIBAN){
-            return redirect()->route('poshtiban.response.index');
-        }else{
+        if (auth()->user()->getraworiginal('role') === Userconsts::USER) {
+            return redirect()->route('ticket.index');
+        } elseif (auth()->user()->getraworiginal('role') === Userconsts::POSHTIBAN) {
+            return redirect()->route('response.index');
+        } else {
             return redirect()->route('admin.index');
 
         }
