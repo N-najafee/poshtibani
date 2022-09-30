@@ -26,18 +26,17 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class,'index'])->name('home');
+Route::get('/home', [HomeController::class,'index'])->name('home')->middleware('auth');
 
 Route::prefix('admin')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index')->middleware(['auth','CheckAdmin']);
 });
 
-Route::resource("ticket",TicketController::class)->only('index')->middleware(['auth','CheckUser']);
-Route::resource("ticket",TicketController::class)->except('index')->middleware('auth');
-Route::resource("subject",SubjectController::class)->except('show')->middleware(['auth','CheckAdmin']);
-Route::resource("user",UserController::class)->except('show','destroy')->middleware(['auth','CheckAdmin']);
+Route::resource("ticket",TicketController::class)->middleware('auth');
+Route::resource("subject",SubjectController::class)->except('show','index')->middleware('auth');
+Route::resource("user",UserController::class)->except('show','destroy')->middleware('auth');
 
-Route::prefix('/response')->middleware(['auth','CheckPoshtiban'])->name('response.')->group(function(){
+Route::prefix('/response')->middleware('auth')->name('response.')->group(function(){
     Route::get('/',[ResponseController::class,'index'])->name('index');
     Route::get('create/{ticket}',[ResponseController::class,'create'])->name('create');
     Route::post('/{ticket}',[ResponseController::class,'store'])->name('store');

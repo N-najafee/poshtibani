@@ -15,15 +15,12 @@ class Ticket extends Model
     protected $guarded=[];
 
 
-    function parent(){
-        return $this->belongsTo(Ticket::class,'parent_id','id');
+    function subject(){
+        return $this->belongsTo(Subject::class,'subject_id','id');
     }
 
-    function child(){
-        return $this->hasMany(Ticket::class,'parent_id','id');
 
-    }
-    function responses_methode(){
+    function responses(){
         return $this->hasMany(Response::class,"ticket_id","id")->orderBy('created_at','DESC');
     }
 

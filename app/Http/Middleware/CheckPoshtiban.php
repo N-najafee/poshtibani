@@ -6,7 +6,7 @@ use App\Http\Consts\Userconsts;
 use Closure;
 use Illuminate\Http\Request;
 
-class Checkposhtiban
+class CheckPoshtiban
 {
     /**
      * Handle an incoming request.

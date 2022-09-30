@@ -10,17 +10,20 @@
             <hr>
             <h2 class=" m-3">ایجاد موضوع :  </h2>
         </div>
-        <form action="{{route('admin.store.subject',['user'=>$user->id])}}" method="post" autocomplete="off" >
+        <form action="{{route('subject.store')}}" method="post" autocomplete="off" >
             @csrf
             @include('files.error')
             <div class="row ">
                 <div class="form-group col-3">
-                    <label> نام موضوع</label>
-                    <input class="form-control @error('name_subject')  is-invalid @enderror" type="text" name="name_subject">
+                    <label> موضوع</label>
+                    <input class="form-control @error('subject')  is-invalid @enderror" type="text" name="subject">
                 </div>
                 <div class="form-group col-3">
-                    <label>توضیحات</label>
-                    <textarea class="form-select" cols="5" rows="1" name="description"></textarea>
+                    <label>وضعیت</label>
+                    <select class="form-select"  name="is_active">
+                        <option value="1" selected>فعال</option>
+                        <option value="0">غیرفعال</option>
+                    </select>
                 </div>
             </div >
             <input type="submit" class="btn btn-lg btn-outline-primary m-3" value="ایجاد">

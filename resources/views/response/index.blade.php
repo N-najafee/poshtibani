@@ -24,23 +24,23 @@
                     <tr class="{{$ticket->deleted_at ? 'text-danger' : ''}}">
                         <td>{{$tickets->firstitem()+$key}}</td>
                         <td>{{$ticket->title}}</td>
-                        <td><span {{$ticket->trashed() ? 'text-danger' : ''}}>{{$ticket->parent->subject}}</span></td>
+                        <td><span {{$ticket->trashed() ? 'text-danger' : ''}}>{{$ticket->subject->name}}</span></td>
                         <td><a href="{{url(env('UPLOAD_FILE').$ticket->attachment)}}" target="_blank">{{$ticket->attachment}}</a></td>
-                        <td>{{count($ticket->responses_methode)}}</td>
+                        <td>{{count($ticket->responses)}}</td>
                         <td>{{$ticket->status}}</td>
                         <td class="d-flex justify-content-center btn-group btn-group-justified">
                             @if($ticket->getraworiginal('status') === \App\Http\Consts\Ticketconsts::CLOSE)
-                                <a href="{{route('poshtiban.response.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}">  نمایش پاسخ</a>
+                                <a href="{{route('response.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}">  نمایش پاسخ</a>
                             @else
-                                <a href="{{route('poshtiban.response.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}"> پاسخ</a>
+                                <a href="{{route('response.create',['ticket'=>$ticket->id])}}" class="btn btn-outline-primary ms-5 me-5  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}"> پاسخ</a>
                             @endif
-                            <div class="dropdown ">
-                                <button class="btn btn-outline-primary dropdown-toggle ms-5  {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}" type="button"
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle ms-5 {{count($ticket->responses)> 0 ?  '' : 'disabled'  }} {{$ticket->deleted_at ? 'disabled btn-outline-danger' : ''}}" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                     تغییر وضعیت تیکت ها
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <form action="{{route('poshtiban.response.update',['ticket'=>$ticket->id])}}" method="post">
+                                    <form action="{{route('response.update',['ticket'=>$ticket->id])}}" method="post">
                                         @csrf
                                         @method('PUT')
                                         <input type="submit" class="dropdown-item fw-bold {{$ticket->getraworiginal('status') === \App\Http\Consts\Ticketconsts::OPEN ? 'disabled' : " "}}" name="status[{{\App\Http\Consts\Ticketconsts::OPEN}}]" value="باز">

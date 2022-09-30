@@ -18,7 +18,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' =>$this->faker->randomElement(['admin','poshtiban','user']),
+            'name' =>$this->faker->randomElement(['admin','response','user']),
             'email' => $this->faker->unique()->safeEmail(),
             'role'=>Userconsts::USER,
             'email_verified_at' => now(),

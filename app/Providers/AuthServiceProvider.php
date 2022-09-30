@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Response;
+use App\Models\Subject;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Policies\ResponsePolicy;
+use App\Policies\SubjectPolicy;
 use App\Policies\TicketPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -22,6 +24,8 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
          User::class => UserPolicy::class,
          Ticket::class => TicketPolicy::class,
+        Subject::class=>SubjectPolicy::class,
+        Response::class=>ResponsePolicy::class,
     ];
 
     /**
@@ -33,6 +37,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+
     }
 }

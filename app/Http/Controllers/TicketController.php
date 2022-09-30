@@ -29,7 +29,6 @@ class TicketController extends Controller
     public function __construct()
     {
 
-
     }
 
 
@@ -37,6 +36,7 @@ class TicketController extends Controller
     {
         $user = auth()->user();
         $tickets = Ticket::withTrashed()->where('user_id', $user->id)->orderby('created_at', 'DESC')->latest()->paginate(2);
+        $this->authorize('viewAny', Ticket::class);
         return view('ticket.show', compact('tickets'));
     }
 

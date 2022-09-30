@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ResponseMailJob;
+use App\Mail\ResponseMail;
 use App\Models\Response;
 use App\Models\Ticket;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 
 class ResponseController extends Controller
 {
@@ -18,15 +23,14 @@ class ResponseController extends Controller
 
     public function __construct()
     {
-        if (!auth()->user()) {
-            $this->middleware('auth');
-        }
+
     }
 
     public function index()
     {
-        $tickets = Ticket::withTrashed()->where('parent_id', '!=', 0)->latest()->paginate(5);
-        return view('poshtiban.index', compact('tickets'));
+        $tickets = Ticket::withTrashed()->latest()->paginate(5);
+        $this->authorize('viewAny',Response::class);
+        return view('response.index', compact('tickets'));
     }
 
     /**
@@ -36,7 +40,8 @@ class ResponseController extends Controller
      */
     public function create(Ticket $ticket)
     {
-        return view('poshtiban.response', compact('ticket'));
+        $this->authorize('create',Response::class);
+        return view('response.create_response', compact('ticket'));
     }
 
     /**
@@ -52,13 +57,13 @@ class ResponseController extends Controller
         ]);
         try {
             DB::beginTransaction();
-            Response::create([
+           $response= Response::create([
                 'ticket_id' => $ticket->id,
                 'user_id' => auth()->user()->id,
                 'description' => trim($request->text),
             ]);
             $ticket->update([
-                'status' => $ticket->getRawOriginal('status') ? 2 : 2,
+                'status' => 2,
             ]);
             DB::commit();
         } catch (Exception $e) {
@@ -66,8 +71,10 @@ class ResponseController extends Controller
             alert()->error("خطا در ثبت پاسخ ");
             return redirect()->back();
         }
+        $user=User::find($response->ticket->user_id);
+        ResponseMailJob::dispatchSync($response,$user);
         alert()->success("پاسخ شما با موفقیت ثبت گردید");
-        return redirect()->route('poshtiban.response.index');
+        return redirect()->route('response.index');
     }
 
     /**
@@ -87,9 +94,9 @@ class ResponseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Response $response)
     {
-        //
+
     }
 
     /**
@@ -99,8 +106,11 @@ class ResponseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request,Ticket $ticket)
     {
+        // سوال در خصوص این دسترسی
+        $response=$ticket->responses->first();
+        $this->authorize('update',$response);
         $ticket_status=$ticket->getraworiginal('status');
         if($ticket_status !== key($request->status) ){
             $ticket->update([

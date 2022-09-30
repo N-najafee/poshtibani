@@ -24,7 +24,8 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <!-- top list -->
+        @include('files.error')
+        <!-- top list -->
             <div class="row justify-content-between">
                 <div class="col-6 text-end">
                     <h3>تیکت {{ $ticket->title }} </h3>
@@ -36,7 +37,7 @@
             <div class="col-8 m-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4> موضوع : {{$ticket->parent->subject}} </h4>
+                        <h4> موضوع : {{$ticket->subject->name}} </h4>
                     </div>
                     <div class="card-body">
                         <h4 class="card-title"> عنوان تیکت : {{$ticket->title}} </h4>
@@ -62,7 +63,8 @@
                                             <div class="card-img">
                                                 <div class="card-img-top">
                                                     <img style="width: 450px; height:250px"
-                                                         src="{{(url(env('UPLOAD_FILE').$ticket->attachment))}}" alt="img">
+                                                         src="{{(url(env('UPLOAD_FILE').$ticket->attachment))}}"
+                                                         alt="img">
                                                 </div>
                                             </div>
                                         </div>
@@ -76,7 +78,7 @@
                                 </div>
                             </div>
                         @endif
-                        <form action="{{route('admin.ticket.destroy',['ticket'=>$ticket->id])}}" method="post">
+                        <form action="{{route('ticket.destroy',['ticket'=>$ticket->id])}}" method="post">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-outline-danger col-3 mt-3">حذف</button>
@@ -85,13 +87,13 @@
                 </div>
                 <div class="card bg-light p-2 list-inline">
                     <h3 class="card-title"> پاسخ ها: </h3>
-                    @if(count($ticket->responses_methode)>0)
-                        @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
-                            <form action="{{route('admin.ticket.update',['ticket'=>$ticket->id])}}" method="post">
+                    @if(count($ticket->responses)>0)
+                        @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
+                            <form action="{{route('ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                 @csrf
                                 @method('PUT')
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                    : {{$response->user_response->name}}</h4>
+                                    {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
                                         class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
                                 </h4>
@@ -106,17 +108,18 @@
                             بیشتر
                         </button>
                     @endif
-                    @if(count($ticket->responses_methode->slice(2))>0)
+                    @if(count($ticket->responses->slice(2))>0)
                         <div id="more" class="hid mt-3">
-                            @foreach($ticket->responses_methode->slice(2) as $key=>$response)
-                                <form action="{{route('admin.ticket.update',['ticket'=>$ticket->id])}}" method="post">
+                            @foreach($ticket->responses->slice(2) as $key=>$response)
+                                <form action="{{route('ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                     @csrf
                                     @method('PUT')
                                     <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                        : {{$response->user_response->name}}</h4>
+                                        {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
                                     <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
                                     <label></label>
-                                    <textarea class="p-2 form-control text-muted" name="response[{{$response->id}}]">  {{$response->description}} </textarea>
+                                    <textarea class="p-2 form-control text-muted"
+                                              name="response[{{$response->id}}]">  {{$response->description}} </textarea>
                                     <button class="btn btn-outline-primary mt-3">ویرایش</button>
                                 </form>
                                 <hr>

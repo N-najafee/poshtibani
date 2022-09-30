@@ -156,12 +156,11 @@ return [
         'newpassword_confirmation' => 'تکرار رمز عبور جدید',
         'longitude'             => 'طول جغرافیایی',
         'latitude'              => 'عرض جغرافیایی',
-        'subject_parent'              => 'موضوع',
-        'name_subject'              => 'نام موضوع',
         'subject'              => 'موضوع',
-        'confirm_password'              => 'تکرار',
-        'current_password' => 'رمزعبور صحیح نمیباشد.',
-        'password' => 'رمزعبور صحیح نمیباشد.',
+        'confirm_password'     => 'تکرار رمز عبور',
+        'current_password'     => 'رمزعبور صحیح نمیباشد.',
+        'password'             => 'رمزعبور صحیح نمیباشد.',
+        'response'             =>     'پاسخ',
 
 
     ],
