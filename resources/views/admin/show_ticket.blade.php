@@ -83,7 +83,7 @@
                     @if(count($ticket->responses)>0)
                         @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
                             <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                : {{$response->user_response->name}}</h4>
+                                : {{$response->user->name}}</h4>
                             <h4 class="{{$loop->first ? "text-info" : ""}}"><i
                                     class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
                             </h4>
@@ -98,7 +98,7 @@
                         <div id="more" class="hid mt-3">
                             @foreach($ticket->responses->slice(2) as $key=>$response)
                                 <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                    : {{$response->user_response->name}}</h4>
+                                    : {{$response->user->name}}</h4>
                                 <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
                                 <h5 class="p-2 text-muted">  {{$response->description}}</h5>
                                 <hr>

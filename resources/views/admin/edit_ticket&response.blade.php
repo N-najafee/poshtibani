@@ -93,7 +93,7 @@
                                 @csrf
                                 @method('PUT')
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                    {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
+                                    {{$response->user->role}}: {{$response->user->name}}</h4>
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
                                         class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
                                 </h4>
@@ -115,7 +115,7 @@
                                     @csrf
                                     @method('PUT')
                                     <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                        {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
+                                        {{$response->user->role}}: {{$response->user->name}}</h4>
                                     <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
                                     <label></label>
                                     <textarea class="p-2 form-control text-muted"

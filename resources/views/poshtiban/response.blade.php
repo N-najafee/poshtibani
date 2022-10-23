@@ -37,14 +37,14 @@
             <div class="col-8 m-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4> موضوع : {{$ticket->subject->name}} </h4>
+                        <h4> موضوع : {{$ticket->parent->subject}} </h4>
                     </div>
                     <div class="card-body">
                         <h4 class="card-title"> عنوان تیکت : {{$ticket->title}} </h4>
                         <span>توضیحات تیکت :</span>
                         <p class="card-text">{{$ticket->description}}</p>
                         <h5>تیکت در وضعیت <span class="text-info">{{$ticket->status}}</span> می باشد. </h5>
-                        <a href="{{route('response.index')}}" class="btn btn-outline-dark">بازگشت</a>
+                        <a href="{{route('poshtiban.index')}}" class="btn btn-outline-dark">بازگشت</a>
                     @if($ticket->attachment)
                                     <button type="button" class="btn btn-outline-primary m-2 ms-5"
                                             data-bs-toggle="modal"
@@ -76,14 +76,14 @@
                                         </div>
                                     </div>
                                     @endif
-                        @if($ticket->getraworiginal('status') !== \App\Http\Consts\Ticketconsts::CLOSE)
+                        @if($ticket->getraworiginal('status') !== \App\Models\Ticket::CLOSE)
                                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
                                         پاسخ به سوال
                                     </button>
                                     <div class="collapse collapse-horizontal" id="collapseWidthExample">
-                                        <form action="{{route('response.store',['ticket'=>$ticket->id])}}" method="post">
+                                        <form action="{{route('poshtiban.store.response',['ticket'=>$ticket->id])}}" method="post">
                                             @csrf
-                                            <textarea class="card card-body mt-3" name="text" cols="80"
+                                            <textarea class="card card-body mt-3" name="text" cols="105"
                                                       rows="5">{{old('text')}}</textarea>
                                             <button class="btn btn-outline-primary mt-2">ارسال</button>
                                         </form>
@@ -93,26 +93,25 @@
                             </div>
                             <div class="card bg-light p-2 list-inline">
                                 <h3 class="card-title "> پاسخ ها: </h3>
-                                @if(count($ticket->responses)>0)
-                                    @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
-                                        <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                            {{$response->user->role}} : {{$response->user->name}}</h4>
-                                        <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
-                                                class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
+                                @if(count($ticket->responses_methode)>0)
+                                    @foreach($ticket->responses_methode->chunk(2)->first() as $key=>$response)
+                                        <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
+                                            : {{$response->user->name}}</h4>
+                                        <h4 class="{{$loop->first ? "text-info" : ""}}"><i
+                                                class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
                                         </h4>
-                                        <h5 class="p-2 {{$loop->first ? 'text-info' : ''}}">   {{$response->description}}</h5>
+                                        <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
                                         <hr>
                                     @endforeach
                                     <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده
                                         پاسخ های بیشتر
                                     </button>
                                 @endif
-                                @if(count($ticket->responses->slice(2))>0)
+                                @if(count($ticket->responses_methode->slice(2))>0)
                                     <div id="more" class="hid mt-3">
-                                        @foreach($ticket->responses->slice(2) as $key=>$response)
-
+                                        @foreach($ticket->responses_methode->slice(2) as $key=>$response)
                                             <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                                {{$response->user->role}} : {{$response->user->name}}</h4>
+                                                : {{$response->user->name}}</h4>
                                             <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
                                             <h5 class="p-2 text-muted">  {{$response->description}}</h5>
                                             <hr>

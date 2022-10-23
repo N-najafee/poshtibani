@@ -11,8 +11,11 @@ class Response extends Model
     use HasFactory , SoftDeletes;
     protected $table='responses';
     protected $guarded=[];
+    protected $with=[
+        'user:id,name',
+    ];
 
-    function user_response(){
+    function user(){
         return $this->belongsTo(User::class,"user_id","id");
     }
     function ticket(){

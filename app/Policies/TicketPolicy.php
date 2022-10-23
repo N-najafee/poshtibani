@@ -32,7 +32,7 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket)
     {
-        return $user->getraworiginal('role') === Userconsts::ADMIN;
+        return $user->getraworiginal('role') === Userconsts::ADMIN || Userconsts::USER;
     }
 
     /**

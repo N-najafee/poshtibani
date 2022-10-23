@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Consts\Ticketconsts;
 use App\Http\Consts\Userconsts;
-use App\Jobs\ticketMailjob;
+use App\Jobs\TicketMailJob;
 use App\Mail\Ticketmail;
 use App\Models\Response;
 use App\Models\Subject;
@@ -12,8 +12,8 @@ use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\RedirectResponse as RedirectResponseAlias;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use UxWeb\SweetAlert\SweetAlert;
@@ -30,14 +30,15 @@ class TicketController extends Controller
     {
 
     }
-
-
+//
+//
     public function index()
     {
         $user = auth()->user();
-        $tickets = Ticket::withTrashed()->where('user_id', $user->id)->orderby('created_at', 'DESC')->latest()->paginate(2);
+        $tickets = Ticket::withCount('responses')->with('subject')->without('responses')->withTrashed()->latest()->paginate(2);
+
         $this->authorize('viewAny', Ticket::class);
-        return view('ticket.show', compact('tickets'));
+        return view('ticket.index', compact('tickets'));
     }
 
 
@@ -59,7 +60,7 @@ class TicketController extends Controller
      * @param Request $request
      * @return RedirectResponseAlias
      */
-    public function store(Request $request): RedirectResponseAlias
+    public function store(Request $request)
     {
 
         $request->validate([
@@ -69,11 +70,11 @@ class TicketController extends Controller
             'attachment.*' => 'nullable|mimes:jpg,jpeg,png,svg,pdf,txt',
         ]);
         if ($request->has('attachment')) {
-            $file_name = create_name($request->attachment->getclientoriginalname());
+            $file_name =CreateFileName($request->attachment->getclientoriginalname());
             $request->attachment->move(public_path(env('UPLOAD_FILE')), $file_name);
         }
         $ticket = Ticket::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::id(),
             'subject_id' => $request->subject,
             'title' => $request->title,
             'description' => $request->description,
@@ -96,7 +97,10 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
-        return view('admin.show_ticket', compact('ticket'));
+        $ticket=Ticket::with('responses')->find($ticket->id);
+        $ticketFirstResponse=$ticket->responses->chunk(2)->first();
+        $ticketLastResponse=$ticket->responses->slice(2);
+        return view('ticket.show-t', compact('ticket','ticketFirstResponse','ticketLastResponse'));
     }
 
     /**
@@ -126,7 +130,7 @@ class TicketController extends Controller
         ]);
         Response::find(key($request->response))->update([
             'description' => implode($request->response),
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::id(),
             'updated_at' => Carbon::now(),
         ]);
         alert()->success('پاسخ تیکت ویرایش گردید');
@@ -159,8 +163,11 @@ class TicketController extends Controller
             alert()->warning('تیکت و پاسخ های آن به دلیل وجود خطاحذف نگردید ');
             return redirect()->route('admin.index');
         }
-
         alert()->success('تیکت و پاسخ های آن حذف گردید');
         return redirect()->route('admin.index');
+    }
+    public function get_data(Ticket $ticket){
+        $responses=$ticket->responses->slice(2);
+        return ($responses);
     }
 }

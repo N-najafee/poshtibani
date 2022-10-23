@@ -42,4 +42,5 @@ Route::prefix('/response')->middleware('auth')->name('response.')->group(functio
     Route::post('/{ticket}',[ResponseController::class,'store'])->name('store');
     Route::Put('/{ticket}',[ResponseController::class,'update'])->name('update');
 });
-
+//Route::resource('responses.tickets', ResponseController::class);
+Route::get('get_ticket/{ticket}',[TicketController::class,'get_data']);

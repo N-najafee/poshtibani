@@ -14,20 +14,20 @@ class UserController extends Controller
 
     }
 
-    function index()
+    public function index()
     {
 
         return redirect()->route('admin.index');
     }
 
-    function create()
+    public function create()
     {
         $this->authorize('create', User::class);
         return view('admin.create_user');
 
     }
 
-    function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -48,13 +48,13 @@ class UserController extends Controller
     }
 
 
-    function edit(User $user)
+    public function edit(User $user)
     {
         $this->authorize('update', $user);
         return view('admin.edit_user', compact('user'));
     }
 
-    function update(Request $request, User $user)
+    public function update(Request $request, User $user)
     {
         $request->validate([
             'name' => 'required|string',

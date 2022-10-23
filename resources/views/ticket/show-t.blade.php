@@ -1,31 +1,19 @@
 @extends('layouts.app')
 @section('title','show ticket')
-@section('style')
-    <style>
-        .hid {
-            display: none;
-        }
 
-        .show {
-            display: block;
-        }
-    </style>
-@endsection
 @section('script')
     <script>
-
-        let more_responses = document.getElementById('more');
-
-        function show_response() {
-            more_responses.classList.toggle('show');
-            more_responses.classList.toggle('hid');
-        }
+        $(`.test`).click(function () {
+            let ticketId = $(`.test`).val();
+        $.get(`{{url('get_ticket/${ticketId}')}}`,function (response){
+            console.log(response);
+        });
+        });
     </script>
 @endsection
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <!-- top list -->
             <div class="row justify-content-between ">
                 <div class="col-6 text-end">
                     <h3>لیست تیکت ها </h3>
@@ -36,12 +24,7 @@
                 </div>
                 <hr>
             </div>
-            <!-- end top list -->
-
-            <!-- main body -->
-
-            @foreach($tickets as  $ticket)
-                <div class="col-8 m-4">
+             <div class="col-8 m-4">
                     <div class="card">
                         <div class="card-header">
                             <h4> موضوع : {{$ticket->subject->name}} </h4>
@@ -54,7 +37,7 @@
                             @endif
                             <span>توضیحات تیکت :</span>
                             <p class="card-text">{{$ticket->description}}</p>
-                            @if($ticket->attachment)
+                        @if($ticket->attachment)
                                 <button type="button" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
                                         data-bs-target="#Modal_{{$ticket->id}}">
                                     مشاهده فایل
@@ -90,57 +73,32 @@
                         <div class="card bg-light p-2 list-inline">
                             <h3 class="card-title "> پاسخ ها: </h3>
                             @if(count($ticket->responses)>0)
-                                @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
-                                    @if($response->updated_at)
-                                        <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ ویرایش شده توسط
-                                            : {{$response->user->name}}</h4>
-                                        <h4 class="{{$loop->first ? "text-info" : ""}}"><i
-                                                class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->updated_at}}
-                                        </h4>
-                                    @else
-                                    <h4 class="{{$loop->first ? "text-info" : ""}}"> {{$key+1}} _ پاسخ داده شده توسط
+                                @foreach($ticketFirstResponse as $key=>$response)
+                                    <h4 class="{{$loop->first ? "text-info" : ""}}"> _ پاسخ داده شده توسط
                                         : {{$response->user->name}}</h4>
                                     <h4 class="{{$loop->first ? "text-info" : ""}}"><i
                                             class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}
                                     </h4>
-                                    @endif
                                     <h5 class="p-2 {{$loop->first ? "text-info" : ""}}">   {{$response->description}}</h5>
                                     <hr>
                                 @endforeach
-                                <button class="btn btn-outline-info  text-dark" onclick="show_response()"> مشاهده پاسخ
+                            @endif
+                            @if($ticket->HasMoreResponse())
+                                <button class="btn btn-outline-info  text-dark test" value="{{$ticket->id}}"> مشاهده
+                                    پاسخ
                                     های بیشتر
                                 </button>
-                            @endif
-                            @if(count($ticket->responses->slice(2))>0)
-                                <div id="more" class="hid mt-3">
-                                    @foreach($ticket->responses->slice(2) as $key=>$response)
-                                        @if($response->updated_at)
-                                            <h4> {{$key+1}} _ پاسخ ویرایش شده توسط
-                                                : {{$response->user->name}}</h4>
-                                            <h4><i
-                                                    class="fa fa-clock"></i> {{$response->updated_at}}
-                                            </h4>
-                                        @else
-                                        <h4>{{$key+1}} _ پاسخ داده شده توسط : {{$response->user->name}}</h4>
-                                        <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
-                                        @endif
-                                        <h5 class="p-2 text-muted">  {{$response->description}}</h5>
-                                        <hr>
-                                    @endforeach
-                                </div>
-
+                                @foreach($ticketLastResponse as $key=>$response)
+                                <h4>{{$key+1}} _ پاسخ داده شده توسط : {{$response->user->name}}</h4>
+                                <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
+                                <h5 class="p-2 text-muted">  {{$response->description}}</h5>
+                                <hr>
+                                @endforeach
                             @endif
                         </div>
                     </div>
-                </div>
-            @endforeach
-            <div class="mt-5 col-12">
-                <div class="row justify-content-center p-5">
-                    <div class="col-4">
-                        {{$tickets->render()}}
-                    </div>
-                </div>
-                <!-- end main body -->
-            </div>
+                 <a class="btn btn-outline-dark mt-3" href="{{route('home')}}" >بازگشت</a>
+             </div>
         </div>
+
 @endsection

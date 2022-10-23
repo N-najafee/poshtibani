@@ -17,7 +17,7 @@ class CreateResponsesTable extends Migration
             $table->id();
             $table->text('description');
             $table->foreignId("user_id");
-            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId("ticket_id");
             $table->foreign("ticket_id")->references('id')->on('tickets')->onDelete('cascade');
             $table->softDeletes();

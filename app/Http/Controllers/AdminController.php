@@ -19,12 +19,12 @@ class AdminController extends Controller
     }
 
 
-    function index()
+    public function index()
     {
 
         $users = User::orderby('created_at', 'DESC')->get();
         $subjects = Subject::all();
-        $tickets = Ticket::withTrashed()->orderBy('created_at','DESC')->get();
+        $tickets = Ticket::withTrashed()->orderBy('created_at', 'DESC')->get();
         return view('admin.index', compact('tickets', 'subjects', 'users'));
     }
 
