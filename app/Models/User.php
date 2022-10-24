@@ -17,19 +17,17 @@ class User extends Authenticatable
 
     use HasApiTokens, HasFactory, Notifiable;
 
-    function getIsActiveAttribute($value){
-        return $value ? "فعال": "غیرفعال";
+    function getIsActiveAttribute($value)
+    {
+        return $value ? "فعال" : "غیرفعال";
     }
 
-//    function setPasswordAttribute($value){
-////        return $this->attributes['password']=Hash::make($value);
-//    }
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $table='users';
+    protected $table = 'users';
     protected $fillable = [
         'name',
         'email',

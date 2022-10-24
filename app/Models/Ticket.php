@@ -26,10 +26,6 @@ class Ticket extends Model
         return $this->hasMany(Response::class, "ticket_id", "id")->orderBy('created_at', 'DESC');
     }
 
-    public function HasMoreResponse(){
-     return count($this->responses->slice(2))>0 ?? 0;
-    }
-
     public function getStatusAttribute($value)
     {
 

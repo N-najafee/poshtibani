@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Consts\Ticketconsts;
 use App\Http\Consts\Userconsts;
 use App\Jobs\TicketMailJob;
-use App\Mail\Ticketmail;
 use App\Models\Response;
 use App\Models\Subject;
 use App\Models\Ticket;
@@ -15,7 +14,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use UxWeb\SweetAlert\SweetAlert;
 
 class TicketController extends Controller
@@ -30,14 +28,12 @@ class TicketController extends Controller
     {
 
     }
-//
-//
+
     public function index()
     {
-        $user = auth()->user();
-        $tickets = Ticket::withCount('responses')->with('subject')->without('responses')->withTrashed()->latest()->paginate(2);
-
         $this->authorize('viewAny', Ticket::class);
+        $user = Auth::user();
+        $tickets = Ticket::withCount('responses')->with('subject')->without('responses')->withTrashed()->latest()->paginate(2);
         return view('ticket.index', compact('tickets'));
     }
 
@@ -70,7 +66,7 @@ class TicketController extends Controller
             'attachment.*' => 'nullable|mimes:jpg,jpeg,png,svg,pdf,txt',
         ]);
         if ($request->has('attachment')) {
-            $file_name =CreateFileName($request->attachment->getclientoriginalname());
+            $file_name = CreateFileName($request->attachment->getclientoriginalname());
             $request->attachment->move(public_path(env('UPLOAD_FILE')), $file_name);
         }
         $ticket = Ticket::create([
@@ -97,10 +93,10 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
-        $ticket=Ticket::with('responses')->find($ticket->id);
-        $ticketFirstResponse=$ticket->responses->chunk(2)->first();
-        $ticketLastResponse=$ticket->responses->slice(2);
-        return view('ticket.show-t', compact('ticket','ticketFirstResponse','ticketLastResponse'));
+        $ticket = Ticket::with(['responses','subject'])->find($ticket->id);
+        $ticketFirstResponse = $ticket->responses->chunk(2)->first();
+        $ticketLastResponse = $ticket->responses->slice(2)->take(10);
+        return view('ticket.show', compact('ticket', 'ticketFirstResponse', 'ticketLastResponse'));
     }
 
     /**
@@ -112,8 +108,10 @@ class TicketController extends Controller
     public function edit(Ticket $ticket)
     {
         $this->authorize('update', $ticket);
-        return view('admin.edit_ticket&response', compact('ticket'));
-
+        $ticket = Ticket::with(['responses', 'subject'])->find($ticket->id);
+        $ticketFirstResponse = $ticket->responses->chunk(2)->first();
+        $ticketLastResponse = $ticket->responses->slice(2)->take(10);
+        return view('admin.edit_ticket&response', compact('ticket', 'ticketFirstResponse', 'ticketLastResponse'));
     }
 
     /**
@@ -166,8 +164,12 @@ class TicketController extends Controller
         alert()->success('تیکت و پاسخ های آن حذف گردید');
         return redirect()->route('admin.index');
     }
-    public function get_data(Ticket $ticket){
-        $responses=$ticket->responses->slice(2);
-        return ($responses);
+
+    public function get_data(Ticket $ticket)
+    {
+        $ticket = Ticket::with('responses')->find($ticket->id);
+        $users = User::all();
+        $ticketLastResponse = $ticket->responses->slice(2)->take(10);
+        return (['ticketLastResponse' => $ticketLastResponse, 'users' => $users]);
     }
 }

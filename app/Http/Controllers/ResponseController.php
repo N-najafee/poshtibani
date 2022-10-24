@@ -9,9 +9,9 @@ use App\Models\Ticket;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
 
 class ResponseController extends Controller
 {
@@ -28,7 +28,7 @@ class ResponseController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::withTrashed()->latest()->paginate(5);
+        $tickets = Ticket::with(['responses', 'subject'])->withTrashed()->latest()->paginate(5);
         $this->authorize('viewAny', Response::class);
         return view('response.index', compact('tickets'));
     }
@@ -41,7 +41,10 @@ class ResponseController extends Controller
     public function create(Ticket $ticket)
     {
         $this->authorize('create', Response::class);
-        return view('response.create_response', compact('ticket'));
+        $ticket = Ticket::with(['responses','subject'])->find($ticket->id);
+        $ticketFirstResponse = $ticket->responses->chunk(2)->first();
+        $ticketLastResponse = $ticket->responses->slice(2)->take(10);
+        return view('response.create_response', compact('ticket','ticketFirstResponse','ticketLastResponse'));
     }
 
     /**
@@ -59,7 +62,7 @@ class ResponseController extends Controller
             DB::beginTransaction();
             $response = Response::create([
                 'ticket_id' => $ticket->id,
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::id(),
                 'description' => trim($request->text),
             ]);
             $ticket->update([
@@ -110,12 +113,9 @@ class ResponseController extends Controller
     {
         $response = $ticket->responses->first();
         $this->authorize('update', $response);
-        $ticket_status = $ticket->getraworiginal('status');
-        if ($ticket_status !== key($request->status)) {
-            $ticket->update([
-                'status' => key($request->status),
-            ]);
-        }
+        $ticket->update([
+            'status' => key($request->status),
+        ]);
         $status = implode($request->status);
         alert()->success("  وضعیت تیکت به $status تغییر پیدا کرد ")->addButton("ok", "ok");
         return redirect()->back();

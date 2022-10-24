@@ -25,7 +25,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         if (auth()->user()->getraworiginal('role') === Userconsts::USER) {
             return redirect()->route('ticket.index');
         } elseif (auth()->user()->getraworiginal('role') === Userconsts::POSHTIBAN) {

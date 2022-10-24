@@ -7,8 +7,12 @@
             <div
                 class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1>لیست تیکت ها</h1>
+                <div class="col-6 text-start">
+                    <a href="{{route('ticket.create')}}"><h3 class="btn btn-outline-primary">ایجاد تیکت <i
+                                class="fa fa-lg fa-plus"></i></h3></a>
+                </div>
             </div>
-            <h4>لیست تیکت ها</h4>
+
             <div class="table-responsive">
                 <table class="table  table-bordered  text-center">
                     <thead>
@@ -18,7 +22,7 @@
                         <th>موضوع</th>
                         <th>تعداد پاسخ ها</th>
                         <th>وضعیت</th>
-                        <th>نمایش</th>
+                        <th>عملیات</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -28,7 +32,7 @@
                                 <td>{{$key + 1}}</td>
                                 <td>{{$ticket->title}}</td>
                                 <td>{{$ticket->subject->name}}</td>
-                                <td>{{$ticket->responses_count}}</td>
+                                <td>{{($ticket->responses_count)}}</td>
                                 <td>{{$ticket->status}}</td>
                                 <td>
                                     <a href="{{route('ticket.show',['ticket'=>$ticket->id])}}"
