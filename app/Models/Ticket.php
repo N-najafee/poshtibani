@@ -9,36 +9,34 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $table='tickets';
-    protected $guarded=[];
+    protected $table = 'tickets';
+    protected $guarded = [];
 
 
-    function subject(){
-        return $this->belongsTo(Subject::class,'subject_id','id');
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id', 'id');
     }
 
 
-    function responses(){
-        return $this->hasMany(Response::class,"ticket_id","id")->orderBy('created_at','DESC');
+    public function responses()
+    {
+        return $this->hasMany(Response::class, "ticket_id", "id")->orderBy('created_at', 'DESC');
     }
 
-    function user_ticket(){
-        return $this->belongsTo(User::class,"user_id","id");
-    }
+    public function getStatusAttribute($value)
+    {
 
-    function getStatusAttribute($value){
-
-        if($value === Ticketconsts::OPEN){
+        if ($value === Ticketconsts::OPEN) {
             return 'باز';
-        }elseif ($value === Ticketconsts::COMPLETED){
+        } elseif ($value === Ticketconsts::COMPLETED) {
             return 'پاسخ داده شده';
-        }else{
+        } else {
             return 'بسته';
         }
     }
-
 
 
 }

@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Response extends Model
 {
-    use HasFactory , SoftDeletes;
-    protected $table='responses';
-    protected $guarded=[];
+    use HasFactory, SoftDeletes;
 
-    function user_response(){
-        return $this->belongsTo(User::class,"user_id","id");
+    protected $table = 'responses';
+    protected $guarded = [];
+    protected $with = [
+        'user:id,name',
+    ];
+
+    function user()
+    {
+        return $this->belongsTo(User::class, "user_id", "id");
     }
-    function ticket(){
-        return $this->belongsTo(Ticket::class,"ticket_id","id");
+
+    function ticket()
+    {
+        return $this->belongsTo(Ticket::class, "ticket_id", "id");
     }
 }

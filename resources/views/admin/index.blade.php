@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title',"admin_index")
-
 @section('content')
     <div class="container-fluid">
         <main role="main" class="col-12 px-4">

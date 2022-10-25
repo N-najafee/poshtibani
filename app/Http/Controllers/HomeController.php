@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Consts\Userconsts;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use UxWeb\SweetAlert\SweetAlert;
 
@@ -22,7 +23,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    function index()
+    public function index()
     {
         if (auth()->user()->getraworiginal('role') === Userconsts::USER) {
             return redirect()->route('ticket.index');
@@ -33,5 +34,4 @@ class HomeController extends Controller
 
         }
     }
-
 }

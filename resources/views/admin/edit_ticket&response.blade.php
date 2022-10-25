@@ -24,16 +24,13 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-        @include('files.error')
-        <!-- top list -->
+            @include('files.error')
             <div class="row justify-content-between">
                 <div class="col-6 text-end">
                     <h3>تیکت {{ $ticket->title }} </h3>
                 </div>
                 <hr>
             </div>
-            <!-- end top list -->
-            <!-- main body -->
             <div class="col-8 m-4">
                 <div class="card">
                     <div class="card-header">
@@ -87,13 +84,13 @@
                 </div>
                 <div class="card bg-light p-2 list-inline">
                     <h3 class="card-title"> پاسخ ها: </h3>
-                    @if(count($ticket->responses)>0)
-                        @foreach($ticket->responses->chunk(2)->first() as $key=>$response)
+                    @if($ticketFirstResponse)
+                        @foreach($ticketFirstResponse as $key=>$response)
                             <form action="{{route('ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                 @csrf
                                 @method('PUT')
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"> {{$key+1}} _ پاسخ داده شده توسط
-                                    {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
+                                    {{$response->user->role}}: {{$response->user->name}}</h4>
                                 <h4 class="{{$loop->first ? 'text-info' : ''}}"><i
                                         class="fa fa-clock {{$loop->first ? 'text-info' : ''}}"></i> {{$response->created_at}}
                                 </h4>
@@ -108,14 +105,14 @@
                             بیشتر
                         </button>
                     @endif
-                    @if(count($ticket->responses->slice(2))>0)
+                    @if(count($ticketLastResponse)>0)
                         <div id="more" class="hid mt-3">
-                            @foreach($ticket->responses->slice(2) as $key=>$response)
+                            @foreach($ticketLastResponse as $key=>$response)
                                 <form action="{{route('ticket.update',['ticket'=>$ticket->id])}}" method="post">
                                     @csrf
                                     @method('PUT')
                                     <h4>{{$key+1}} _ پاسخ داده شده توسط
-                                        {{$response->user_response->role}}: {{$response->user_response->name}}</h4>
+                                        {{$response->user->role}}: {{$response->user->name}}</h4>
                                     <h4><i class="fa fa-clock"></i> {{$response->created_at}}</h4>
                                     <label></label>
                                     <textarea class="p-2 form-control text-muted"

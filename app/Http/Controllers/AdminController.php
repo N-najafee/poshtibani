@@ -2,30 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Consts\Ticketconsts;
-use App\Models\Response;
+use Illuminate\Http\Request;
 use App\Models\Subject;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Policies\SubjectPolicy;
-use Illuminate\Auth\Access\Gate;
+
 
 class AdminController extends Controller
 {
-
-    public function __construct()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-
-    }
-
-
-    function index()
-    {
-
         $users = User::orderby('created_at', 'DESC')->get();
         $subjects = Subject::all();
-        $tickets = Ticket::withTrashed()->orderBy('created_at','DESC')->get();
+        $tickets = Ticket::with(['subject', 'responses'])->withTrashed()->orderBy('created_at', 'DESC')->get();
         return view('admin.index', compact('tickets', 'subjects', 'users'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
 }
