@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ResponseMailJob;
-use App\Mail\ResponseMail;
 use App\Models\Response;
 use App\Models\Ticket;
 use App\Models\User;
@@ -28,8 +27,8 @@ class ResponseController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::with(['responses', 'subject'])->withTrashed()->latest()->paginate(5);
         $this->authorize('viewAny', Response::class);
+        $tickets = Ticket::with(['responses', 'subject'])->withTrashed()->latest()->paginate(5);
         return view('response.index', compact('tickets'));
     }
 

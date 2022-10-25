@@ -69,7 +69,7 @@
                                         <div class="modal-body">
                                             <div class="card-img">
                                                 <div class="card-img-top">
-                                                    <img style="width: 450px; height:250px"
+                                                    <img style="width: 450px; height:250px"  alt="attach"
                                                          src=" {{(url(env('UPLOAD_FILE').$ticket->attachment))}}">
                                                 </div>
                                             </div>
@@ -90,7 +90,7 @@
                         <h3 class="card-title "> پاسخ ها: </h3>
                         @if($ticketFirstResponse)
                             @foreach($ticketFirstResponse as $key=>$response)
-                                <h4 class="{{$loop->first ? "text-info" : ""}}"> _ پاسخ داده شده توسط
+                                <h4 class="{{$loop->first ? "text-info" : ""}}">{{$key+1}}    _ پاسخ داده شده توسط
                                     : {{$response->user->name}}</h4>
                                 <h4 class="{{$loop->first ? "text-info" : ""}}"><i
                                         class="fa fa-clock {{$loop->first ? "text-info" : ""}}"></i> {{$response->created_at}}

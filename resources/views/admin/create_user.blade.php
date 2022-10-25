@@ -50,7 +50,6 @@
             </div>
             <input type="submit" class="btn btn-lg btn-outline-primary m-3" value="ایجاد">
         </form>
-
         <a href="{{route('admin.index')}}" class="btn btn-lg btn-outline-dark">بازگشت</a>
     </div>
 
